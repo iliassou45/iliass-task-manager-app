@@ -476,7 +476,7 @@ class EmeiDetailActivity : AppCompatActivity() {
 
     private fun showDeleteConfirmation() {
         val input = TextInputEditText(this).apply {
-            hint = "Enter password (1-5)"
+            hint = "Enter password"
             inputType = android.text.InputType.TYPE_CLASS_NUMBER
         }
 
@@ -487,7 +487,7 @@ class EmeiDetailActivity : AppCompatActivity() {
 
         AlertDialog.Builder(this)
             .setTitle("🔒 Delete Phone")
-            .setMessage("To delete this phone entry, please enter the password (a number from 1 to 5):")
+            .setMessage("To delete this phone entry, please enter the password (12345):")
             .setView(container)
             .setPositiveButton("Delete") { _, _ ->
                 val password = input.text.toString().trim()
@@ -497,14 +497,12 @@ class EmeiDetailActivity : AppCompatActivity() {
                     return@setPositiveButton
                 }
 
-                val passwordNumber = password.toIntOrNull()
-
-                if (passwordNumber == null || passwordNumber !in 1..5) {
-                    Toast.makeText(this, "❌ Invalid password! Must be a number between 1 and 5", Toast.LENGTH_LONG).show()
+                if (password != "12345") {
+                    Toast.makeText(this, "❌ Invalid password!", Toast.LENGTH_LONG).show()
                     return@setPositiveButton
                 }
 
-                // Password is valid, proceed with deletion
+                // Password is correct, proceed with deletion
                 deletePhone()
             }
             .setNegativeButton("Cancel", null)
