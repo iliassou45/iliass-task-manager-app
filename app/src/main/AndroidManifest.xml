@@ -114,6 +114,10 @@
             android:stopWithTask="false" />
 
         <activity
+            android:name=".PhoneImageViewActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Iliass.NoActionBar" />
+        <activity
             android:name=".EmeiDetailActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />

@@ -1,5 +1,6 @@
 package com.iliass.iliass.ui.adapter
 
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.view.LayoutInflater
@@ -9,6 +10,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.card.MaterialCardView
+import com.iliass.iliass.PhoneImageViewActivity
 import com.iliass.iliass.R
 import com.iliass.iliass.model.Phone
 import com.iliass.iliass.util.TimeUtils
@@ -69,9 +71,12 @@ class PhoneAdapter(
                 val bitmap = BitmapFactory.decodeFile(path)
                 holder.phoneImage.setImageBitmap(bitmap)
 
-                // Add click listener to view full-size image
+                // Add click listener to open full-screen image activity
                 holder.phoneImage.setOnClickListener {
-                    showFullSizeImage(holder.itemView.context, bitmap)
+                    val intent = Intent(holder.itemView.context, PhoneImageViewActivity::class.java)
+                    intent.putExtra("phone", phone)
+                    intent.putExtra("imagePath", path)
+                    holder.itemView.context.startActivity(intent)
                 }
             } else {
                 holder.phoneImage.setImageResource(android.R.drawable.ic_menu_gallery)
@@ -92,19 +97,5 @@ class PhoneAdapter(
     fun updatePhones(newPhones: List<Phone>) {
         phones = newPhones
         notifyDataSetChanged()
-    }
-
-    private fun showFullSizeImage(context: android.content.Context, bitmap: Bitmap) {
-        val imageView = ImageView(context).apply {
-            setImageBitmap(bitmap)
-            scaleType = ImageView.ScaleType.FIT_CENTER
-            setPadding(16, 16, 16, 16)
-        }
-
-        androidx.appcompat.app.AlertDialog.Builder(context)
-            .setView(imageView)
-            .setPositiveButton("Close", null)
-            .create()
-            .show()
     }
 }
