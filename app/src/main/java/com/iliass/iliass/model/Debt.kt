@@ -7,12 +7,18 @@ enum class DebtType {
     OWED_TO_ME
 }
 
+enum class Currency {
+    KMF,
+    UGX
+}
+
 data class Debt(
     val id: String = UUID.randomUUID().toString(),
     val personName: String,
     val type: DebtType,
     val initialAmount: Double,
     val reason: String,
+    val currency: Currency = Currency.KMF,
     val dateCreated: Long = System.currentTimeMillis(),
     val transactions: MutableList<DebtTransaction> = mutableListOf(),
     val isPaid: Boolean = false

@@ -41,7 +41,7 @@ class DebtAdapter(
 
         holder.personNameText.text = debt.getDisplayName()
         holder.reasonText.text = debt.reason
-        holder.amountText.text = CurrencyUtils.formatCurrency(remaining)
+        holder.amountText.text = CurrencyUtils.formatCurrency(remaining, debt.currency)
 
         val dateFormat = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
         holder.dateText.text = dateFormat.format(Date(debt.dateCreated))
