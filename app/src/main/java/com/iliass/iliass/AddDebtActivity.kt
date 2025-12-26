@@ -3,8 +3,10 @@ package com.iliass.iliass
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
+import android.widget.RadioGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.iliass.iliass.model.Currency
 import com.iliass.iliass.model.Debt
 import com.iliass.iliass.model.DebtType
 import com.iliass.iliass.repository.DebtDatabase
@@ -14,6 +16,7 @@ class AddDebtActivity : AppCompatActivity() {
     private lateinit var personNameInput: EditText
     private lateinit var amountInput: EditText
     private lateinit var reasonInput: EditText
+    private lateinit var currencyRadioGroup: RadioGroup
     private lateinit var saveButton: Button
 
     private val debtDatabase by lazy { DebtDatabase.getInstance(this) }
@@ -41,6 +44,7 @@ class AddDebtActivity : AppCompatActivity() {
         personNameInput = findViewById(R.id.personNameInput)
         amountInput = findViewById(R.id.amountInput)
         reasonInput = findViewById(R.id.reasonInput)
+        currencyRadioGroup = findViewById(R.id.currencyRadioGroup)
         saveButton = findViewById(R.id.saveButton)
 
         personNameInput.hint = if (debtType == DebtType.I_OWE) {
@@ -82,11 +86,18 @@ class AddDebtActivity : AppCompatActivity() {
             return
         }
 
+        // Get selected currency
+        val selectedCurrency = when (currencyRadioGroup.checkedRadioButtonId) {
+            R.id.radioUGX -> Currency.UGX
+            else -> Currency.KMF
+        }
+
         val debt = Debt(
             personName = personName,
             type = debtType,
             initialAmount = amount,
-            reason = reason
+            reason = reason,
+            currency = selectedCurrency
         )
 
         debtDatabase.addDebt(debt)

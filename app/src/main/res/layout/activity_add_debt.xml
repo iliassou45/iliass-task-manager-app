@@ -76,7 +76,7 @@
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Amount (KMF)"
+                    android:hint="Amount"
                     android:layout_marginTop="16dp"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
@@ -87,6 +87,37 @@
                         android:inputType="numberDecimal"
                         android:maxLines="1" />
                 </com.google.android.material.textfield.TextInputLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Currency"
+                    android:textSize="14sp"
+                    android:textColor="#757575"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="8dp" />
+
+                <RadioGroup
+                    android:id="@+id/currencyRadioGroup"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <RadioButton
+                        android:id="@+id/radioKMF"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="KMF (Comorian Franc)"
+                        android:checked="true" />
+
+                    <RadioButton
+                        android:id="@+id/radioUGX"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="UGX (Ugandan Shilling)" />
+                </RadioGroup>
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"

@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.iliass.iliass.R
+import com.iliass.iliass.model.Currency
 import com.iliass.iliass.model.Debt
 import com.iliass.iliass.model.DebtTransaction
 import com.iliass.iliass.model.TransactionType
@@ -15,6 +16,7 @@ import java.util.*
 
 class TransactionAdapter(
     private var transactions: List<DebtTransaction>,
+    private var currency: Currency = Currency.KMF,
     private val onTransactionLongClick: ((DebtTransaction) -> Unit)? = null
 ) : RecyclerView.Adapter<TransactionAdapter.TransactionViewHolder>() {
 
@@ -38,12 +40,12 @@ class TransactionAdapter(
         when (transaction.type) {
             TransactionType.PAYMENT -> {
                 holder.typeText.text = "💳 Payment"
-                holder.amountText.text = "- ${CurrencyUtils.formatCurrency(transaction.amount)}"
+                holder.amountText.text = "- ${CurrencyUtils.formatCurrency(transaction.amount, currency)}"
                 holder.amountText.setTextColor(0xFF43A047.toInt()) // Green for payments
             }
             TransactionType.ADDITIONAL_LOAN -> {
                 holder.typeText.text = "➕ Additional Loan"
-                holder.amountText.text = "+ ${CurrencyUtils.formatCurrency(transaction.amount)}"
+                holder.amountText.text = "+ ${CurrencyUtils.formatCurrency(transaction.amount, currency)}"
                 holder.amountText.setTextColor(0xFFE53935.toInt()) // Red for additional loans
             }
         }
@@ -69,8 +71,9 @@ class TransactionAdapter(
 
     override fun getItemCount() = transactions.size
 
-    fun updateTransactions(newTransactions: List<DebtTransaction>) {
+    fun updateTransactions(newTransactions: List<DebtTransaction>, newCurrency: Currency = currency) {
         transactions = newTransactions
+        currency = newCurrency
         notifyDataSetChanged()
     }
 }

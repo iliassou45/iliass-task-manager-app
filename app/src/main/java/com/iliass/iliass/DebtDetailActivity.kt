@@ -78,6 +78,7 @@ class DebtDetailActivity : AppCompatActivity() {
         transactionsRecyclerView.layoutManager = LinearLayoutManager(this)
         transactionAdapter = TransactionAdapter(
             transactions = emptyList(),
+            currency = debt?.currency ?: com.iliass.iliass.model.Currency.KMF,
             onTransactionLongClick = { transaction ->
                 showDeleteTransactionDialog(transaction)
             }
@@ -93,10 +94,10 @@ class DebtDetailActivity : AppCompatActivity() {
             supportActionBar?.title = d.getDisplayName()
             personNameText.text = d.personName
             reasonText.text = "📌 ${d.reason}"
-            initialAmountText.text = "Initial: ${CurrencyUtils.formatCurrency(d.initialAmount)}"
+            initialAmountText.text = "Initial: ${CurrencyUtils.formatCurrency(d.initialAmount, d.currency)}"
 
             val remaining = d.getRemainingAmount()
-            remainingAmountText.text = "Remaining: ${CurrencyUtils.formatCurrency(remaining)}"
+            remainingAmountText.text = "Remaining: ${CurrencyUtils.formatCurrency(remaining, d.currency)}"
 
             if (remaining <= 0) {
                 remainingAmountText.setTextColor(0xFF43A047.toInt())
@@ -158,7 +159,7 @@ class DebtDetailActivity : AppCompatActivity() {
             val endIndex = minOf(startIndex + itemsPerPage, allTransactions.size)
             val pageTransactions = allTransactions.subList(startIndex, endIndex)
 
-            transactionAdapter.updateTransactions(pageTransactions)
+            transactionAdapter.updateTransactions(pageTransactions, debt?.currency ?: com.iliass.iliass.model.Currency.KMF)
         }
     }
 

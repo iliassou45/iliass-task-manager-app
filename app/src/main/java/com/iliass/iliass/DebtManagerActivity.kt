@@ -120,13 +120,21 @@ class DebtManagerActivity : AppCompatActivity() {
     }
 
     private fun updateTotals() {
-        val totalOwing = debtDatabase.getDebtsByType(DebtType.I_OWE)
-            .sumOf { it.getRemainingAmount() }
-        val totalOwed = debtDatabase.getDebtsByType(DebtType.OWED_TO_ME)
-            .sumOf { it.getRemainingAmount() }
+        // Calculate totals in KMF (base currency)
+        val totalOwingKMF = debtDatabase.getDebtsByType(DebtType.I_OWE)
+            .sumOf { CurrencyUtils.toKMF(it.getRemainingAmount(), it.currency) }
+        val totalOwedKMF = debtDatabase.getDebtsByType(DebtType.OWED_TO_ME)
+            .sumOf { CurrencyUtils.toKMF(it.getRemainingAmount(), it.currency) }
 
-        totalOwingText.text = "I Owe: ${CurrencyUtils.formatCurrency(totalOwing)}"
-        totalOwedText.text = "Owed to Me: ${CurrencyUtils.formatCurrency(totalOwed)}"
+        // Calculate totals in UGX
+        val totalOwingUGX = debtDatabase.getDebtsByType(DebtType.I_OWE)
+            .sumOf { CurrencyUtils.toUGX(it.getRemainingAmount(), it.currency) }
+        val totalOwedUGX = debtDatabase.getDebtsByType(DebtType.OWED_TO_ME)
+            .sumOf { CurrencyUtils.toUGX(it.getRemainingAmount(), it.currency) }
+
+        // Display totals in both currencies
+        totalOwingText.text = "I Owe: ${CurrencyUtils.formatCurrency(totalOwingKMF, com.iliass.iliass.model.Currency.KMF)} / ${CurrencyUtils.formatCurrency(totalOwingUGX, com.iliass.iliass.model.Currency.UGX)}"
+        totalOwedText.text = "Owed to Me: ${CurrencyUtils.formatCurrency(totalOwedKMF, com.iliass.iliass.model.Currency.KMF)} / ${CurrencyUtils.formatCurrency(totalOwedUGX, com.iliass.iliass.model.Currency.UGX)}"
     }
 
     private fun showDeleteDebtDialog(debt: Debt) {
