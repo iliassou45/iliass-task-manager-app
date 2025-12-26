@@ -138,7 +138,7 @@ class CategoryManager(private val context: Context) {
     fun getCategoriesFromNotes(notes: List<com.iliass.iliass.model.Note>): List<String> {
         // Extract unique categories from notes
         val noteCategories = notes.mapNotNull {
-            if (it.category.isNotBlank()) it.category else null
+            if (!it.category.isNullOrBlank()) it.category else null
         }.distinct()
 
         // Merge with saved categories
