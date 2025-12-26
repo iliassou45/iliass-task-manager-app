@@ -10,7 +10,8 @@ data class Note(
     val contentWithFormatting: String = "", // Store HTML formatted content
     val createdAt: Long = System.currentTimeMillis(),
     val updatedAt: Long = System.currentTimeMillis(),
-    val color: Int = generateRandomColor() // Add color field
+    val color: Int = generateRandomColor(), // Add color field
+    val category: String = "" // Category/Folder for organizing notes
 ) : Serializable {
     companion object {
         private fun generateRandomColor(): Int {

@@ -7,18 +7,23 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.View
+import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.LinearLayout
+import android.widget.Spinner
+import android.widget.AdapterView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.iliass.iliass.model.Note
 import com.iliass.iliass.ui.adapter.NotesAdapter
 import com.iliass.iliass.util.NoteManager
+import com.iliass.iliass.util.CategoryManager
 import java.io.File
 
 class NotesListActivity : AppCompatActivity() {
@@ -32,11 +37,17 @@ class NotesListActivity : AppCompatActivity() {
     private lateinit var searchInput: EditText
     private lateinit var closeSearchButton: ImageButton
     private lateinit var emptyStateText: TextView
+    private lateinit var categoryFilterSpinner: Spinner
+    private lateinit var manageCategoriesButton: ImageButton
     private lateinit var noteManager: NoteManager
+    private lateinit var categoryManager: CategoryManager
     private lateinit var adapter: NotesAdapter
 
     private var allNotes: List<Note> = emptyList()
+    private var filteredNotes: List<Note> = emptyList()
+    private var categories: MutableList<String> = mutableListOf()
     private var isSearchVisible = false
+    private var selectedCategory: String = "All"
 
     companion object {
         private const val IMPORT_REQUEST_CODE = 101
@@ -47,10 +58,12 @@ class NotesListActivity : AppCompatActivity() {
         setContentView(R.layout.activity_notes_list)
 
         noteManager = NoteManager(this)
+        categoryManager = CategoryManager(this)
 
         initViews()
         setupRecyclerView()
         setupListeners()
+        loadCategories()
         loadNotes()
     }
 
@@ -64,6 +77,8 @@ class NotesListActivity : AppCompatActivity() {
         searchInput = findViewById(R.id.searchInput)
         closeSearchButton = findViewById(R.id.closeSearchButton)
         emptyStateText = findViewById(R.id.emptyStateText)
+        categoryFilterSpinner = findViewById(R.id.categoryFilterSpinner)
+        manageCategoriesButton = findViewById(R.id.manageCategoriesButton)
     }
 
     private fun setupRecyclerView() {
@@ -108,6 +123,136 @@ class NotesListActivity : AppCompatActivity() {
 
             override fun afterTextChanged(s: Editable?) {}
         })
+
+        categoryFilterSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                selectedCategory = categories[position]
+                applyFilters()
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        }
+
+        manageCategoriesButton.setOnClickListener {
+            showManageCategoriesDialog()
+        }
+    }
+
+    private fun loadCategories() {
+        categories.clear()
+        categories.add("All")
+        categories.addAll(categoryManager.getCategoriesFromNotes(allNotes))
+
+        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, categories)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        categoryFilterSpinner.adapter = adapter
+
+        // Restore selected category
+        val selectedIndex = categories.indexOf(selectedCategory)
+        if (selectedIndex >= 0) {
+            categoryFilterSpinner.setSelection(selectedIndex)
+        }
+    }
+
+    private fun applyFilters() {
+        // Apply category filter
+        filteredNotes = if (selectedCategory == "All") {
+            allNotes
+        } else {
+            allNotes.filter { note ->
+                note.category == selectedCategory || (note.category.isEmpty() && selectedCategory == CategoryManager.DEFAULT_CATEGORY)
+            }
+        }
+
+        // Apply search filter if search is active
+        if (isSearchVisible && searchInput.text.isNotEmpty()) {
+            val query = searchInput.text.toString()
+            filteredNotes = filteredNotes.filter { note ->
+                note.title.contains(query, ignoreCase = true) ||
+                        note.content.contains(query, ignoreCase = true)
+            }
+        }
+
+        adapter.updateNotes(filteredNotes)
+        updateEmptyState()
+    }
+
+    private fun showManageCategoriesDialog() {
+        val dialogView = layoutInflater.inflate(android.R.layout.select_dialog_item, null)
+        val options = arrayOf("Add Category", "Delete Category")
+
+        AlertDialog.Builder(this)
+            .setTitle("Manage Categories")
+            .setItems(options) { _, which ->
+                when (which) {
+                    0 -> showAddCategoryDialog()
+                    1 -> showDeleteCategoryDialog()
+                }
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+
+    private fun showAddCategoryDialog() {
+        val input = EditText(this)
+        input.hint = "Category name"
+
+        AlertDialog.Builder(this)
+            .setTitle("Add New Category")
+            .setView(input)
+            .setPositiveButton("Add") { _, _ ->
+                val categoryName = input.text.toString().trim()
+                if (categoryName.isNotEmpty()) {
+                    if (categoryManager.addCategory(categoryName)) {
+                        loadCategories()
+                        Toast.makeText(this, "Category added", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(this, "Category already exists", Toast.LENGTH_SHORT).show()
+                    }
+                } else {
+                    Toast.makeText(this, "Please enter a category name", Toast.LENGTH_SHORT).show()
+                }
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+
+    private fun showDeleteCategoryDialog() {
+        val categoryList = categoryManager.getAllCategories()
+            .filter { it != CategoryManager.DEFAULT_CATEGORY }
+            .toTypedArray()
+
+        if (categoryList.isEmpty()) {
+            Toast.makeText(this, "No categories to delete", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        AlertDialog.Builder(this)
+            .setTitle("Delete Category")
+            .setItems(categoryList) { _, which ->
+                val categoryToDelete = categoryList[which]
+                AlertDialog.Builder(this)
+                    .setTitle("Confirm Delete")
+                    .setMessage("Delete category \"$categoryToDelete\"?\n\nNotes in this category will be moved to \"${CategoryManager.DEFAULT_CATEGORY}\".")
+                    .setPositiveButton("Delete") { _, _ ->
+                        // Update notes in this category to default
+                        val notesToUpdate = allNotes.filter { it.category == categoryToDelete }
+                        notesToUpdate.forEach { note ->
+                            noteManager.saveNote(note.copy(category = CategoryManager.DEFAULT_CATEGORY))
+                        }
+
+                        // Delete the category
+                        if (categoryManager.deleteCategory(categoryToDelete)) {
+                            loadNotes()
+                            loadCategories()
+                            Toast.makeText(this, "Category deleted", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                    .setNegativeButton("Cancel", null)
+                    .show()
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
     }
 
     private fun toggleSearch() {
@@ -125,37 +270,18 @@ class NotesListActivity : AppCompatActivity() {
             searchInput.text.clear()
             val imm = getSystemService(android.content.Context.INPUT_METHOD_SERVICE) as android.view.inputmethod.InputMethodManager
             imm.hideSoftInputFromWindow(searchInput.windowToken, 0)
-            adapter.updateNotes(allNotes)
-            updateEmptyState()
+            applyFilters()
         }
     }
 
     private fun filterNotes(query: String) {
-        if (query.isEmpty()) {
-            adapter.updateNotes(allNotes)
-            updateEmptyState()
-            return
-        }
-
-        val filteredNotes = allNotes.filter { note ->
-            note.title.contains(query, ignoreCase = true) ||
-                    note.content.contains(query, ignoreCase = true)
-        }
-
-        adapter.updateNotes(filteredNotes)
-
-        if (filteredNotes.isEmpty()) {
-            emptyStateText.visibility = View.VISIBLE
-            emptyStateText.text = "No notes found for \"$query\""
-        } else {
-            emptyStateText.visibility = View.GONE
-        }
+        applyFilters()
     }
 
     private fun loadNotes() {
         allNotes = noteManager.getAllNotes()
-        adapter.updateNotes(allNotes)
-        updateEmptyState()
+        loadCategories()
+        applyFilters()
     }
 
     private fun updateEmptyState() {
@@ -241,6 +367,7 @@ class NotesListActivity : AppCompatActivity() {
             var createdAt = System.currentTimeMillis()
             var updatedAt = System.currentTimeMillis()
             var color = 0xFF4CAF50.toInt()
+            var category = ""
             var plainContent = ""
             var formattedContent = ""
 
@@ -276,6 +403,10 @@ class NotesListActivity : AppCompatActivity() {
                     line.startsWith("COLOR:") -> {
                         color = line.substring(6).toLongOrNull()?.toInt() ?: 0xFF4CAF50.toInt()
                         Log.d("NotesListActivity", "Found COLOR: ${String.format("%08X", color)}")
+                    }
+                    line.startsWith("CATEGORY:") -> {
+                        category = line.substring(9)
+                        Log.d("NotesListActivity", "Found CATEGORY: $category")
                     }
                     line == "CONTENT:" -> {
                         currentSection = "CONTENT"
@@ -329,7 +460,8 @@ class NotesListActivity : AppCompatActivity() {
                 contentWithFormatting = formattedContent,
                 createdAt = createdAt,
                 updatedAt = updatedAt,
-                color = color
+                color = color,
+                category = category
             )
 
             Log.d("NotesListActivity", "========== PARSING COMPLETE ==========")
