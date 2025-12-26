@@ -68,10 +68,10 @@ class MainActivity : AppCompatActivity() {
             ),
             Task(
                 id = 8,
-                title = "📅 App Scheduler",
-                description = "Schedule app launches (Coming Soon)",
-                icon = "📅",
-                isEnabled = false
+                title = "⏰ Task Alarms",
+                description = "Set alarms and reminders for your tasks",
+                icon = "⏰",
+                isEnabled = true
             )
         )
 
@@ -112,6 +112,11 @@ class MainActivity : AppCompatActivity() {
             6 -> {
                 // Navigate to Flashcards activity
                 val intent = Intent(this, FlashCardListActivity::class.java)
+                startActivity(intent)
+            }
+            8 -> {
+                // Navigate to Task Alarms activity
+                val intent = Intent(this, AlarmTaskListActivity::class.java)
                 startActivity(intent)
             }
             else -> {
