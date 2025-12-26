@@ -137,6 +137,54 @@
 
     </LinearLayout>
 
+    <!-- Category Filter -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/categoryFilterCard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardBackgroundColor="#FFFFFF"
+        app:cardElevation="2dp"
+        app:cardCornerRadius="0dp"
+        android:layout_marginTop="4dp"
+        app:layout_constraintTop_toBottomOf="@id/buttonBar">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="12dp"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="📁 Filter:"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:textColor="#666666"
+                android:layout_marginEnd="8dp"/>
+
+            <Spinner
+                android:id="@+id/categoryFilterSpinner"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:minHeight="40dp"/>
+
+            <ImageButton
+                android:id="@+id/manageCategoriesButton"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@android:drawable/ic_menu_manage"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Manage categories"
+                android:scaleType="centerInside"
+                app:tint="#666666"/>
+
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/notesRecyclerView"
         android:layout_width="match_parent"
@@ -144,7 +192,7 @@
         android:paddingHorizontal="8dp"
         android:paddingVertical="8dp"
         android:clipToPadding="false"
-        app:layout_constraintTop_toBottomOf="@id/buttonBar"
+        app:layout_constraintTop_toBottomOf="@id/categoryFilterCard"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

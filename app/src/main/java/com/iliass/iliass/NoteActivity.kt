@@ -19,6 +19,7 @@ import androidx.core.text.HtmlCompat
 import androidx.documentfile.provider.DocumentFile
 import com.iliass.iliass.model.Note
 import com.iliass.iliass.util.NoteManager
+import com.iliass.iliass.util.CategoryManager
 
 private const val TAG = "NoteActivity"
 
@@ -36,9 +37,13 @@ class NoteActivity : AppCompatActivity() {
     private lateinit var boldButton: Button
     private lateinit var italicButton: Button
     private lateinit var underlineButton: Button
+    private lateinit var categorySpinner: Spinner
+    private lateinit var addCategoryButton: ImageButton
 
     private var currentNote: Note? = null
     private lateinit var noteManager: NoteManager
+    private lateinit var categoryManager: CategoryManager
+    private var categories: MutableList<String> = mutableListOf()
 
     companion object {
         private const val EXPORT_FOLDER_REQUEST_CODE = 42
@@ -49,9 +54,11 @@ class NoteActivity : AppCompatActivity() {
         setContentView(R.layout.activity_note)
 
         noteManager = NoteManager(this)
+        categoryManager = CategoryManager(this)
 
         initViews()
         setupListeners()
+        loadCategories()
 
         // Check if we're editing an existing note
         currentNote = intent.getSerializableExtra("note") as? Note
@@ -73,6 +80,8 @@ class NoteActivity : AppCompatActivity() {
         boldButton = findViewById(R.id.boldButton)
         italicButton = findViewById(R.id.italicButton)
         underlineButton = findViewById(R.id.underlineButton)
+        categorySpinner = findViewById(R.id.categorySpinner)
+        addCategoryButton = findViewById(R.id.addCategoryButton)
     }
 
     private fun setupListeners() {
@@ -119,6 +128,56 @@ class NoteActivity : AppCompatActivity() {
         underlineButton.setOnClickListener {
             toggleUnderline()
         }
+
+        addCategoryButton.setOnClickListener {
+            showAddCategoryDialog()
+        }
+    }
+
+    private fun loadCategories() {
+        categories.clear()
+        categories.addAll(categoryManager.getAllCategories())
+
+        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, categories)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        categorySpinner.adapter = adapter
+
+        // Set the current category if editing a note
+        currentNote?.let { note ->
+            val categoryIndex = categories.indexOf(note.category)
+            if (categoryIndex >= 0) {
+                categorySpinner.setSelection(categoryIndex)
+            }
+        }
+    }
+
+    private fun showAddCategoryDialog() {
+        val input = EditText(this)
+        input.hint = "Category name"
+
+        AlertDialog.Builder(this)
+            .setTitle("Add New Category")
+            .setView(input)
+            .setPositiveButton("Add") { _, _ ->
+                val categoryName = input.text.toString().trim()
+                if (categoryName.isNotEmpty()) {
+                    if (categoryManager.addCategory(categoryName)) {
+                        loadCategories()
+                        // Select the newly added category
+                        val newIndex = categories.indexOf(categoryName)
+                        if (newIndex >= 0) {
+                            categorySpinner.setSelection(newIndex)
+                        }
+                        Toast.makeText(this, "Category added", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(this, "Category already exists", Toast.LENGTH_SHORT).show()
+                    }
+                } else {
+                    Toast.makeText(this, "Please enter a category name", Toast.LENGTH_SHORT).show()
+                }
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
     }
 
     private fun showExportFolderSelector() {
@@ -149,6 +208,7 @@ class NoteActivity : AppCompatActivity() {
                 exportData.append("CREATED_AT:${note.createdAt}\n")
                 exportData.append("UPDATED_AT:${note.updatedAt}\n")
                 exportData.append("COLOR:${note.color}\n")
+                exportData.append("CATEGORY:${note.category}\n")
                 exportData.append("---\n")
                 exportData.append("CONTENT:\n")
                 exportData.append(note.content)
@@ -476,6 +536,7 @@ class NoteActivity : AppCompatActivity() {
     private fun saveNote() {
         val title = titleInput.text.toString().trim()
         val plainContent = contentInput.text.toString()
+        val selectedCategory = categorySpinner.selectedItem?.toString() ?: CategoryManager.DEFAULT_CATEGORY
 
         if (title.isEmpty()) {
             Toast.makeText(this, "Please enter a title", Toast.LENGTH_SHORT).show()
@@ -494,6 +555,7 @@ class NoteActivity : AppCompatActivity() {
         Log.d(TAG, "Plain Content: $plainContent")
         Log.d(TAG, "HTML Content: $htmlContent")
         Log.d(TAG, "HTML Content Length: ${htmlContent.length}")
+        Log.d(TAG, "Category: $selectedCategory")
         Log.d(TAG, "========== NOTE SAVED ==========")
 
         val note = if (currentNote != null) {
@@ -501,13 +563,15 @@ class NoteActivity : AppCompatActivity() {
                 title = title,
                 content = plainContent,
                 contentWithFormatting = htmlContent,
+                category = selectedCategory,
                 updatedAt = System.currentTimeMillis()
             )
         } else {
             Note(
                 title = title,
                 content = plainContent,
-                contentWithFormatting = htmlContent
+                contentWithFormatting = htmlContent,
+                category = selectedCategory
             )
         }
 
