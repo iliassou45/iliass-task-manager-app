@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp">
+
+    <TextView
+        android:id="@+id/deleteMessage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="To confirm deletion, please enter the PIN: 12345"
+        android:textSize="14sp"
+        android:textColor="#333333"
+        android:layout_marginBottom="24dp"
+        android:gravity="center"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="PIN"
+        android:textSize="12sp"
+        android:textColor="#999999"
+        android:letterSpacing="0.1"
+        android:layout_marginBottom="8dp"/>
+
+    <EditText
+        android:id="@+id/pinInput"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:hint="Enter PIN"
+        android:inputType="numberPassword"
+        android:textSize="16sp"
+        android:textColor="#212121"
+        android:textColorHint="#CCCCCC"
+        android:background="@android:drawable/edit_text"
+        android:padding="12dp"
+        android:layout_marginBottom="16dp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="⚠️ This action cannot be undone"
+        android:textSize="12sp"
+        android:textColor="#F44336"
+        android:gravity="center"
+        android:layout_marginTop="16dp"/>
+
+</LinearLayout>

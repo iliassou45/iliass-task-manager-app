@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/phoneCard"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="12dp"
+    app:cardElevation="2dp"
+    app:cardCornerRadius="12dp"
+    app:cardBackgroundColor="@android:color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="12dp">
+
+        <!-- Phone Image -->
+        <ImageView
+            android:id="@+id/phoneImage"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:scaleType="centerCrop"
+            android:background="#E0E0E0"
+            android:contentDescription="Phone Image"
+            android:src="@android:drawable/ic_menu_gallery"/>
+
+        <!-- Phone Details -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:layout_marginStart="12dp">
+
+            <!-- Phone Name -->
+            <TextView
+                android:id="@+id/phoneName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="iPhone 13 Pro"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="#212121"/>
+
+            <!-- IMEI -->
+            <TextView
+                android:id="@+id/phoneImei"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="IMEI: 123456789012345"
+                android:textSize="12sp"
+                android:textColor="#757575"
+                android:layout_marginTop="4dp"
+                android:fontFamily="monospace"/>
+
+            <!-- Shop Name -->
+            <TextView
+                android:id="@+id/shopName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="🪧 Tech World"
+                android:textSize="13sp"
+                android:textColor="#424242"
+                android:layout_marginTop="6dp"/>
+
+            <!-- Relative Time -->
+            <TextView
+                android:id="@+id/relativeTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="⏱️ 3 months ago"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:textColor="#1976D2"
+                android:layout_marginTop="6dp"/>
+
+            <!-- Exact Date -->
+            <TextView
+                android:id="@+id/dateRegistered"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="📅 Jan 15, 2024"
+                android:textSize="11sp"
+                android:textColor="#757575"
+                android:layout_marginTop="2dp"/>
+
+            <!-- Warranty Status -->
+            <TextView
+                android:id="@+id/warrantyStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="✅ 9 months left"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:layout_marginTop="4dp"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>
