@@ -294,6 +294,10 @@ class EmeiDetailActivity : AppCompatActivity() {
             showImagePickerDialog()
         }
 
+        phoneImageView.setOnClickListener {
+            showFullSizeImage()
+        }
+
         saveButton.setOnClickListener {
             savePhone()
         }
@@ -304,6 +308,24 @@ class EmeiDetailActivity : AppCompatActivity() {
 
         changeDateButton.setOnClickListener {
             showDateTimePicker()
+        }
+    }
+
+    private fun showFullSizeImage() {
+        selectedImageBitmap?.let { bitmap ->
+            val imageView = ImageView(this).apply {
+                setImageBitmap(bitmap)
+                scaleType = ImageView.ScaleType.FIT_CENTER
+                setPadding(16, 16, 16, 16)
+            }
+
+            AlertDialog.Builder(this)
+                .setView(imageView)
+                .setPositiveButton("Close", null)
+                .create()
+                .show()
+        } ?: run {
+            Toast.makeText(this, "No image to display", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -453,10 +475,36 @@ class EmeiDetailActivity : AppCompatActivity() {
     }
 
     private fun showDeleteConfirmation() {
+        val input = TextInputEditText(this).apply {
+            hint = "Enter password (1-5)"
+            inputType = android.text.InputType.TYPE_CLASS_NUMBER
+        }
+
+        val container = android.widget.FrameLayout(this).apply {
+            setPadding(50, 20, 50, 20)
+            addView(input)
+        }
+
         AlertDialog.Builder(this)
-            .setTitle("Delete Phone")
-            .setMessage("Are you sure you want to delete this phone entry?")
+            .setTitle("🔒 Delete Phone")
+            .setMessage("To delete this phone entry, please enter the password (a number from 1 to 5):")
+            .setView(container)
             .setPositiveButton("Delete") { _, _ ->
+                val password = input.text.toString().trim()
+
+                if (password.isEmpty()) {
+                    Toast.makeText(this, "❌ Password cannot be empty", Toast.LENGTH_SHORT).show()
+                    return@setPositiveButton
+                }
+
+                val passwordNumber = password.toIntOrNull()
+
+                if (passwordNumber == null || passwordNumber !in 1..5) {
+                    Toast.makeText(this, "❌ Invalid password! Must be a number between 1 and 5", Toast.LENGTH_LONG).show()
+                    return@setPositiveButton
+                }
+
+                // Password is valid, proceed with deletion
                 deletePhone()
             }
             .setNegativeButton("Cancel", null)
