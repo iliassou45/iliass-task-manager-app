@@ -49,6 +49,16 @@ class BootReceiver : BroadcastReceiver() {
             } else {
                 Log.d(TAG, "No blocked apps configured")
             }
+
+            // Reschedule all alarm tasks
+            try {
+                Log.d(TAG, "Rescheduling alarm tasks")
+                val alarmTaskManager = AlarmTaskManager.getInstance(context)
+                alarmTaskManager.rescheduleAllAlarms()
+                Log.d(TAG, "Alarm tasks rescheduled successfully")
+            } catch (e: Exception) {
+                Log.e(TAG, "Error rescheduling alarm tasks", e)
+            }
         }
     }
 }

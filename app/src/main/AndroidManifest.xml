@@ -173,6 +173,22 @@
         <activity
             android:name=".NotesListActivity"
             android:exported="false" />
+
+        <!-- Task Alarm Activities -->
+        <activity
+            android:name=".AlarmTaskListActivity"
+            android:exported="false"
+            android:label="Task Alarms" />
+        <activity
+            android:name=".AddAlarmTaskActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
+        <!-- Alarm Receiver -->
+        <receiver
+            android:name=".util.AlarmReceiver"
+            android:enabled="true"
+            android:exported="false" />
     </application>
 
 </manifest>
