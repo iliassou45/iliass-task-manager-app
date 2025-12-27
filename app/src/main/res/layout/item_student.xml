@@ -44,6 +44,16 @@
                     android:textSize="14sp"
                     android:textColor="#757575"
                     android:layout_marginTop="6dp" />
+
+                <TextView
+                    android:id="@+id/locationTimeText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Location &amp; Time"
+                    android:textSize="12sp"
+                    android:textColor="#1976D2"
+                    android:layout_marginTop="4dp"
+                    android:visibility="gone" />
             </LinearLayout>
 
             <LinearLayout

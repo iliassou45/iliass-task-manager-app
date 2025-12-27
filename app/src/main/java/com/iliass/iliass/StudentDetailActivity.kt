@@ -22,6 +22,7 @@ class StudentDetailActivity : AppCompatActivity() {
 
     private lateinit var studentNameText: TextView
     private lateinit var contactInfoText: TextView
+    private lateinit var locationTimeText: TextView
     private lateinit var monthlyAmountText: TextView
     private lateinit var currentDebtText: TextView
     private lateinit var paidThisMonthText: TextView
@@ -71,6 +72,7 @@ class StudentDetailActivity : AppCompatActivity() {
     private fun initViews() {
         studentNameText = findViewById(R.id.studentNameText)
         contactInfoText = findViewById(R.id.contactInfoText)
+        locationTimeText = findViewById(R.id.locationTimeText)
         monthlyAmountText = findViewById(R.id.monthlyAmountText)
         currentDebtText = findViewById(R.id.currentDebtText)
         paidThisMonthText = findViewById(R.id.paidThisMonthText)
@@ -143,6 +145,24 @@ class StudentDetailActivity : AppCompatActivity() {
             contactInfoText.visibility = View.VISIBLE
         } else {
             contactInfoText.visibility = View.GONE
+        }
+
+        // Display location and current time
+        if (student.location.isNotEmpty() || student.timezoneOffsetHours != 0.0) {
+            val locationTime = buildString {
+                if (student.location.isNotEmpty()) {
+                    append("📍 ${student.location}")
+                }
+                val studentLocalTime = student.getStudentLocalTime()
+                if (studentLocalTime.isNotEmpty()) {
+                    if (isNotEmpty()) append(" • ")
+                    append("🕐 ${studentLocalTime} (${student.getTimezoneOffsetDisplay()})")
+                }
+            }
+            locationTimeText.text = locationTime
+            locationTimeText.visibility = View.VISIBLE
+        } else {
+            locationTimeText.visibility = View.GONE
         }
 
         monthlyAmountText.text = currencyFormat.format(student.monthlyAmount)

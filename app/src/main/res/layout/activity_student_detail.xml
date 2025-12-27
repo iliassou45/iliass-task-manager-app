@@ -53,6 +53,18 @@
                         android:maxLines="3"
                         android:ellipsize="end" />
 
+                    <TextView
+                        android:id="@+id/locationTimeText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Location &amp; Time"
+                        android:textSize="14sp"
+                        android:textColor="#1976D2"
+                        android:textStyle="bold"
+                        android:layout_marginTop="8dp"
+                        android:maxLines="2"
+                        android:ellipsize="end" />
+
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"

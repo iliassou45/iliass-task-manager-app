@@ -9,6 +9,8 @@ data class Student(
     val monthlyAmount: Double,
     val phone: String = "",
     val email: String = "",
+    val location: String = "",
+    val timezoneOffsetHours: Double = 0.0,
     val enrollmentDate: Long = System.currentTimeMillis(),
     val isActive: Boolean = true,
     val notes: String = ""
@@ -67,5 +69,27 @@ data class Student(
         calendar.add(java.util.Calendar.MONTH, 1)
         calendar.set(java.util.Calendar.DAY_OF_MONTH, 1)
         return calendar.timeInMillis
+    }
+
+    fun getStudentLocalTime(): String {
+        if (timezoneOffsetHours == 0.0 && location.isEmpty()) {
+            return ""
+        }
+
+        val calendar = java.util.Calendar.getInstance()
+        val offsetMillis = (timezoneOffsetHours * 3600 * 1000).toLong()
+        calendar.timeInMillis = System.currentTimeMillis() + offsetMillis
+
+        val hourFormat = java.text.SimpleDateFormat("HH:mm", java.util.Locale.getDefault())
+        hourFormat.timeZone = java.util.TimeZone.getTimeZone("UTC")
+
+        return hourFormat.format(calendar.time)
+    }
+
+    fun getTimezoneOffsetDisplay(): String {
+        if (timezoneOffsetHours == 0.0) return "UTC+0"
+
+        val sign = if (timezoneOffsetHours >= 0) "+" else ""
+        return "UTC$sign$timezoneOffsetHours"
     }
 }

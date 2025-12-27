@@ -17,6 +17,8 @@ class AddEditStudentActivity : AppCompatActivity() {
     private lateinit var monthlyAmountInput: TextInputEditText
     private lateinit var phoneInput: TextInputEditText
     private lateinit var emailInput: TextInputEditText
+    private lateinit var locationInput: TextInputEditText
+    private lateinit var timezoneOffsetInput: TextInputEditText
     private lateinit var notesInput: TextInputEditText
     private lateinit var activeSwitch: SwitchCompat
     private lateinit var saveButton: Button
@@ -46,6 +48,8 @@ class AddEditStudentActivity : AppCompatActivity() {
         monthlyAmountInput = findViewById(R.id.monthlyAmountInput)
         phoneInput = findViewById(R.id.phoneInput)
         emailInput = findViewById(R.id.emailInput)
+        locationInput = findViewById(R.id.locationInput)
+        timezoneOffsetInput = findViewById(R.id.timezoneOffsetInput)
         notesInput = findViewById(R.id.notesInput)
         activeSwitch = findViewById(R.id.activeSwitch)
         saveButton = findViewById(R.id.saveButton)
@@ -64,6 +68,10 @@ class AddEditStudentActivity : AppCompatActivity() {
                 monthlyAmountInput.setText(student.monthlyAmount.toString())
                 phoneInput.setText(student.phone)
                 emailInput.setText(student.email)
+                locationInput.setText(student.location)
+                if (student.timezoneOffsetHours != 0.0) {
+                    timezoneOffsetInput.setText(student.timezoneOffsetHours.toString())
+                }
                 notesInput.setText(student.notes)
                 activeSwitch.isChecked = student.isActive
             }
@@ -109,6 +117,9 @@ class AddEditStudentActivity : AppCompatActivity() {
         val monthlyAmount = monthlyAmountInput.text.toString().toDouble()
         val phone = phoneInput.text.toString().trim()
         val email = emailInput.text.toString().trim()
+        val location = locationInput.text.toString().trim()
+        val timezoneOffsetStr = timezoneOffsetInput.text.toString().trim()
+        val timezoneOffset = timezoneOffsetStr.toDoubleOrNull() ?: 0.0
         val notes = notesInput.text.toString().trim()
         val isActive = activeSwitch.isChecked
 
@@ -118,6 +129,8 @@ class AddEditStudentActivity : AppCompatActivity() {
                 monthlyAmount = monthlyAmount,
                 phone = phone,
                 email = email,
+                location = location,
+                timezoneOffsetHours = timezoneOffset,
                 notes = notes,
                 isActive = isActive
             )
@@ -127,6 +140,8 @@ class AddEditStudentActivity : AppCompatActivity() {
                 monthlyAmount = monthlyAmount,
                 phone = phone,
                 email = email,
+                location = location,
+                timezoneOffsetHours = timezoneOffset,
                 notes = notes,
                 isActive = isActive
             )

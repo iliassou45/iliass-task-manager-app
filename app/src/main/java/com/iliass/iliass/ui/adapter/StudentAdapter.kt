@@ -23,6 +23,7 @@ class StudentAdapter(
         val cardView: CardView = itemView.findViewById(R.id.studentCard)
         val nameText: TextView = itemView.findViewById(R.id.studentNameText)
         val monthlyAmountText: TextView = itemView.findViewById(R.id.monthlyAmountText)
+        val locationTimeText: TextView = itemView.findViewById(R.id.locationTimeText)
         val debtText: TextView = itemView.findViewById(R.id.debtText)
         val statusText: TextView = itemView.findViewById(R.id.studentStatusText)
     }
@@ -43,6 +44,24 @@ class StudentAdapter(
 
         val currencyFormat = NumberFormat.getCurrencyInstance(Locale.getDefault())
         holder.monthlyAmountText.text = "Monthly: ${currencyFormat.format(monthlyAmount)}"
+
+        // Display location and time
+        if (student.location.isNotEmpty() || student.timezoneOffsetHours != 0.0) {
+            val locationTime = buildString {
+                if (student.location.isNotEmpty()) {
+                    append("📍 ${student.location}")
+                }
+                val studentLocalTime = student.getStudentLocalTime()
+                if (studentLocalTime.isNotEmpty()) {
+                    if (isNotEmpty()) append(" • ")
+                    append("${studentLocalTime}")
+                }
+            }
+            holder.locationTimeText.text = locationTime
+            holder.locationTimeText.visibility = View.VISIBLE
+        } else {
+            holder.locationTimeText.visibility = View.GONE
+        }
 
         if (currentDebt > 0) {
             holder.debtText.text = "Debt: ${currencyFormat.format(currentDebt)}"
