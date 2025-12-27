@@ -462,8 +462,8 @@ class NoteActivity : AppCompatActivity() {
 
         // Set the category spinner to the note's category
         currentNote?.let { note ->
-            // Handle empty category as "Uncategorized"
-            val noteCategory = if (note.category.isBlank()) {
+            // Handle empty or null category as "Uncategorized"
+            val noteCategory = if (note.category.isNullOrBlank()) {
                 CategoryManager.DEFAULT_CATEGORY
             } else {
                 note.category
