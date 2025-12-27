@@ -189,6 +189,23 @@
             android:name=".util.AlarmReceiver"
             android:enabled="true"
             android:exported="false" />
+
+        <!-- Student Payment Activities -->
+        <activity
+            android:name=".StudentPaymentActivity"
+            android:exported="false"
+            android:label="Student Payments" />
+        <activity
+            android:name=".AddEditStudentActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".StudentDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AddPaymentActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
     </application>
 
 </manifest>
