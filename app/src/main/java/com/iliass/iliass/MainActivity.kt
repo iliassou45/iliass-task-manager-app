@@ -72,6 +72,13 @@ class MainActivity : AppCompatActivity() {
                 description = "Set alarms and reminders for your tasks",
                 icon = "⏰",
                 isEnabled = true
+            ),
+            Task(
+                id = 9,
+                title = "🎓 Student Payments",
+                description = "Track student monthly payments and manage debts",
+                icon = "🎓",
+                isEnabled = true
             )
         )
 
@@ -117,6 +124,11 @@ class MainActivity : AppCompatActivity() {
             8 -> {
                 // Navigate to Task Alarms activity
                 val intent = Intent(this, AlarmTaskListActivity::class.java)
+                startActivity(intent)
+            }
+            9 -> {
+                // Navigate to Student Payment activity
+                val intent = Intent(this, StudentPaymentActivity::class.java)
                 startActivity(intent)
             }
             else -> {
