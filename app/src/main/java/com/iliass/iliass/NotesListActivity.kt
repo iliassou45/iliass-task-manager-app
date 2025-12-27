@@ -160,7 +160,8 @@ class NotesListActivity : AppCompatActivity() {
             allNotes
         } else {
             allNotes.filter { note ->
-                note.category == selectedCategory || (note.category.isEmpty() && selectedCategory == CategoryManager.DEFAULT_CATEGORY)
+                val noteCategory = note.category ?: ""
+                noteCategory == selectedCategory || (noteCategory.isEmpty() && selectedCategory == CategoryManager.DEFAULT_CATEGORY)
             }
         }
 
