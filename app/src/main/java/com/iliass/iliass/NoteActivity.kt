@@ -141,14 +141,6 @@ class NoteActivity : AppCompatActivity() {
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, categories)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         categorySpinner.adapter = adapter
-
-        // Set the current category if editing a note
-        currentNote?.let { note ->
-            val categoryIndex = categories.indexOf(note.category)
-            if (categoryIndex >= 0) {
-                categorySpinner.setSelection(categoryIndex)
-            }
-        }
     }
 
     private fun showAddCategoryDialog() {
@@ -467,6 +459,27 @@ class NoteActivity : AppCompatActivity() {
 
     private fun loadNoteData() {
         titleInput.setText(currentNote?.title)
+
+        // Set the category spinner to the note's category
+        currentNote?.let { note ->
+            // Handle empty category as "Uncategorized"
+            val noteCategory = if (note.category.isBlank()) {
+                CategoryManager.DEFAULT_CATEGORY
+            } else {
+                note.category
+            }
+
+            val categoryIndex = categories.indexOf(noteCategory)
+            if (categoryIndex >= 0) {
+                categorySpinner.setSelection(categoryIndex)
+            } else {
+                // If category doesn't exist in list, default to "Uncategorized"
+                val defaultIndex = categories.indexOf(CategoryManager.DEFAULT_CATEGORY)
+                if (defaultIndex >= 0) {
+                    categorySpinner.setSelection(defaultIndex)
+                }
+            }
+        }
 
         Log.d(TAG, "========== LOADING NOTE ==========")
         Log.d(TAG, "Title: ${currentNote?.title}")
