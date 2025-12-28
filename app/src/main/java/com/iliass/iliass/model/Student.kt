@@ -81,7 +81,6 @@ data class Student(
         calendar.timeInMillis = System.currentTimeMillis() + offsetMillis
 
         val hourFormat = java.text.SimpleDateFormat("HH:mm", java.util.Locale.getDefault())
-        hourFormat.timeZone = java.util.TimeZone.getTimeZone("UTC")
 
         return hourFormat.format(calendar.time)
     }
