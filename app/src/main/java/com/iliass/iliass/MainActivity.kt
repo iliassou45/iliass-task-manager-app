@@ -79,6 +79,13 @@ class MainActivity : AppCompatActivity() {
                 description = "Track student monthly payments and manage debts",
                 icon = "🎓",
                 isEnabled = true
+            ),
+            Task(
+                id = 10,
+                title = "👥 Student Groups/Classes",
+                description = "Manage student classes, lessons, and track class analytics",
+                icon = "👥",
+                isEnabled = true
             )
         )
 
@@ -129,6 +136,11 @@ class MainActivity : AppCompatActivity() {
             9 -> {
                 // Navigate to Student Payment activity
                 val intent = Intent(this, StudentPaymentActivity::class.java)
+                startActivity(intent)
+            }
+            10 -> {
+                // Navigate to Classes activity
+                val intent = Intent(this, ClassesActivity::class.java)
                 startActivity(intent)
             }
             else -> {

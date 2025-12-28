@@ -6,6 +6,10 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.iliass.iliass.model.Student
 import com.iliass.iliass.model.Payment
+import com.iliass.iliass.model.StudentClass
+import com.iliass.iliass.model.Lesson
+import com.iliass.iliass.model.ClassStudentHistory
+import com.iliass.iliass.model.HistoryAction
 
 class StudentDatabase private constructor(context: Context) {
 
@@ -14,6 +18,9 @@ class StudentDatabase private constructor(context: Context) {
     private val gson = Gson()
     private val students = mutableListOf<Student>()
     private val payments = mutableListOf<Payment>()
+    private val classes = mutableListOf<StudentClass>()
+    private val lessons = mutableListOf<Lesson>()
+    private val classHistory = mutableListOf<ClassStudentHistory>()
 
     init {
         loadDataFromStorage()
@@ -48,6 +55,33 @@ class StudentDatabase private constructor(context: Context) {
             payments.clear()
             payments.addAll(loadedPayments)
         }
+
+        // Load classes
+        val classesJson = sharedPrefs.getString("classes", null)
+        if (classesJson != null) {
+            val type = object : TypeToken<List<StudentClass>>() {}.type
+            val loadedClasses: List<StudentClass> = gson.fromJson(classesJson, type)
+            classes.clear()
+            classes.addAll(loadedClasses)
+        }
+
+        // Load lessons
+        val lessonsJson = sharedPrefs.getString("lessons", null)
+        if (lessonsJson != null) {
+            val type = object : TypeToken<List<Lesson>>() {}.type
+            val loadedLessons: List<Lesson> = gson.fromJson(lessonsJson, type)
+            lessons.clear()
+            lessons.addAll(loadedLessons)
+        }
+
+        // Load class history
+        val historyJson = sharedPrefs.getString("class_history", null)
+        if (historyJson != null) {
+            val type = object : TypeToken<List<ClassStudentHistory>>() {}.type
+            val loadedHistory: List<ClassStudentHistory> = gson.fromJson(historyJson, type)
+            classHistory.clear()
+            classHistory.addAll(loadedHistory)
+        }
     }
 
     private fun saveStudentsToStorage() {
@@ -58,6 +92,21 @@ class StudentDatabase private constructor(context: Context) {
     private fun savePaymentsToStorage() {
         val json = gson.toJson(payments)
         sharedPrefs.edit().putString("payments", json).apply()
+    }
+
+    private fun saveClassesToStorage() {
+        val json = gson.toJson(classes)
+        sharedPrefs.edit().putString("classes", json).apply()
+    }
+
+    private fun saveLessonsToStorage() {
+        val json = gson.toJson(lessons)
+        sharedPrefs.edit().putString("lessons", json).apply()
+    }
+
+    private fun saveClassHistoryToStorage() {
+        val json = gson.toJson(classHistory)
+        sharedPrefs.edit().putString("class_history", json).apply()
     }
 
     // Student operations
@@ -161,5 +210,135 @@ class StudentDatabase private constructor(context: Context) {
 
     fun getInactiveStudentCount(): Int {
         return students.count { !it.isActive }
+    }
+
+    // Class operations
+    fun addClass(studentClass: StudentClass) {
+        classes.add(studentClass)
+        saveClassesToStorage()
+    }
+
+    fun updateClass(updatedClass: StudentClass) {
+        val index = classes.indexOfFirst { it.id == updatedClass.id }
+        if (index != -1) {
+            classes[index] = updatedClass
+            saveClassesToStorage()
+        }
+    }
+
+    fun deleteClass(classId: String) {
+        classes.removeIf { it.id == classId }
+        // Also delete associated lessons and history
+        lessons.removeIf { it.classId == classId }
+        classHistory.removeIf { it.classId == classId }
+        saveClassesToStorage()
+        saveLessonsToStorage()
+        saveClassHistoryToStorage()
+    }
+
+    fun getClassById(id: String): StudentClass? {
+        return classes.find { it.id == id }
+    }
+
+    fun getAllClasses(): List<StudentClass> {
+        return classes.toList()
+    }
+
+    fun getActiveClasses(): List<StudentClass> {
+        return classes.filter { it.isActive }.sortedBy { it.name }
+    }
+
+    fun getInactiveClasses(): List<StudentClass> {
+        return classes.filter { !it.isActive }.sortedBy { it.name }
+    }
+
+    fun getClassesByStudent(studentId: String): List<StudentClass> {
+        return classes.filter { studentId in it.studentIds }
+    }
+
+    fun addStudentToClass(classId: String, studentId: String) {
+        val classIndex = classes.indexOfFirst { it.id == classId }
+        if (classIndex != -1) {
+            val studentClass = classes[classIndex]
+            if (studentId !in studentClass.studentIds) {
+                studentClass.studentIds.add(studentId)
+                classes[classIndex] = studentClass
+                saveClassesToStorage()
+
+                // Record in history
+                val historyEntry = ClassStudentHistory(
+                    classId = classId,
+                    studentId = studentId,
+                    action = HistoryAction.JOINED
+                )
+                classHistory.add(historyEntry)
+                saveClassHistoryToStorage()
+            }
+        }
+    }
+
+    fun removeStudentFromClass(classId: String, studentId: String) {
+        val classIndex = classes.indexOfFirst { it.id == classId }
+        if (classIndex != -1) {
+            val studentClass = classes[classIndex]
+            if (studentId in studentClass.studentIds) {
+                studentClass.studentIds.remove(studentId)
+                classes[classIndex] = studentClass
+                saveClassesToStorage()
+
+                // Record in history
+                val historyEntry = ClassStudentHistory(
+                    classId = classId,
+                    studentId = studentId,
+                    action = HistoryAction.LEFT
+                )
+                classHistory.add(historyEntry)
+                saveClassHistoryToStorage()
+            }
+        }
+    }
+
+    fun getStudentsLeftFromClass(classId: String): Int {
+        return classHistory.count { it.classId == classId && it.action == HistoryAction.LEFT }
+    }
+
+    // Lesson operations
+    fun addLesson(lesson: Lesson) {
+        lessons.add(lesson)
+        saveLessonsToStorage()
+    }
+
+    fun updateLesson(updatedLesson: Lesson) {
+        val index = lessons.indexOfFirst { it.id == updatedLesson.id }
+        if (index != -1) {
+            lessons[index] = updatedLesson
+            saveLessonsToStorage()
+        }
+    }
+
+    fun deleteLesson(lessonId: String) {
+        lessons.removeIf { it.id == lessonId }
+        saveLessonsToStorage()
+    }
+
+    fun getLessonById(id: String): Lesson? {
+        return lessons.find { it.id == id }
+    }
+
+    fun getAllLessons(): List<Lesson> {
+        return lessons.toList()
+    }
+
+    fun getLessonsByClass(classId: String): List<Lesson> {
+        return lessons.filter { it.classId == classId }
+            .sortedByDescending { it.date }
+    }
+
+    fun getCompletedLessonsCount(classId: String): Int {
+        return lessons.count { it.classId == classId && it.isCompleted }
+    }
+
+    fun getPendingLessonsCount(classId: String): Int {
+        return lessons.count { it.classId == classId && !it.isCompleted }
     }
 }
