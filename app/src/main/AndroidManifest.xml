@@ -206,6 +206,26 @@
             android:name=".AddPaymentActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
+
+        <!-- Student Classes Activities -->
+        <activity
+            android:name=".ClassesActivity"
+            android:exported="false"
+            android:label="Student Groups/Classes" />
+        <activity
+            android:name=".AddEditClassActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".ClassDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AddEditLessonActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".PDFViewerActivity"
+            android:exported="false" />
     </application>
 
 </manifest>
