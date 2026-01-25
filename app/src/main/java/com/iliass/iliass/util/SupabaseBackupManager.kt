@@ -6,7 +6,7 @@ import com.google.gson.GsonBuilder
 import com.iliass.iliass.repository.StudentDataExport
 import com.iliass.iliass.repository.StudentDatabase
 import io.github.jan.supabase.storage.upload
-import io.github.jan.supabase.storage.downloadAuthenticated
+import io.github.jan.supabase.storage.download
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -77,7 +77,7 @@ object SupabaseBackupManager {
             val filePath = "$userId/$BACKUP_FILE_NAME"
             val bucket = SupabaseManager.getStorageBucket()
 
-            val jsonBytes = bucket.downloadAuthenticated(filePath)
+            val jsonBytes = bucket.download(filePath)
             val json = String(jsonBytes, Charsets.UTF_8)
 
             // Parse JSON
@@ -122,7 +122,7 @@ object SupabaseBackupManager {
             val bucket = SupabaseManager.getStorageBucket()
 
             // Try to download and parse to verify it exists and is valid
-            val jsonBytes = bucket.downloadAuthenticated(filePath)
+            val jsonBytes = bucket.download(filePath)
             val json = String(jsonBytes, Charsets.UTF_8)
             val importData = gson.fromJson(json, StudentDataExport::class.java)
 
