@@ -295,6 +295,20 @@
                     android:layout_marginBottom="16dp" />
 
                 <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnCompareWithCloud"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:text="Compare with Cloud"
+                    android:textSize="16sp"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    app:icon="@android:drawable/ic_menu_info_details"
+                    app:iconGravity="start"
+                    app:iconPadding="12dp"
+                    app:cornerRadius="8dp"
+                    app:strokeColor="#4CAF50"
+                    android:layout_marginBottom="12dp" />
+
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnBackupToCloud"
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
@@ -339,6 +353,14 @@
                     android:textSize="12sp"
                     android:textColor="#999999"
                     android:layout_marginTop="8dp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Backup includes: Students, Payments, Classes, Lessons, Notes, and Debts."
+                    android:textSize="12sp"
+                    android:textColor="#4CAF50"
+                    android:layout_marginTop="4dp" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 

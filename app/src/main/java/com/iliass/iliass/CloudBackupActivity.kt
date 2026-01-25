@@ -42,6 +42,7 @@ class CloudBackupActivity : AppCompatActivity() {
 
     // Action views
     private lateinit var backupActionsCard: CardView
+    private lateinit var btnCompareWithCloud: MaterialButton
     private lateinit var btnBackupToCloud: MaterialButton
     private lateinit var btnRestoreFromCloud: MaterialButton
     private lateinit var btnMergeFromCloud: MaterialButton
@@ -88,6 +89,7 @@ class CloudBackupActivity : AppCompatActivity() {
 
         // Action views
         backupActionsCard = findViewById(R.id.backupActionsCard)
+        btnCompareWithCloud = findViewById(R.id.btnCompareWithCloud)
         btnBackupToCloud = findViewById(R.id.btnBackupToCloud)
         btnRestoreFromCloud = findViewById(R.id.btnRestoreFromCloud)
         btnMergeFromCloud = findViewById(R.id.btnMergeFromCloud)
@@ -101,6 +103,7 @@ class CloudBackupActivity : AppCompatActivity() {
         btnSignIn.setOnClickListener { performSignIn() }
         btnSignUp.setOnClickListener { performSignUp() }
         btnSignOut.setOnClickListener { performSignOut() }
+        btnCompareWithCloud.setOnClickListener { performComparison() }
         btnBackupToCloud.setOnClickListener { performBackup() }
         btnRestoreFromCloud.setOnClickListener { showRestoreConfirmation(mergeMode = false) }
         btnMergeFromCloud.setOnClickListener { showRestoreConfirmation(mergeMode = true) }
@@ -240,6 +243,79 @@ class CloudBackupActivity : AppCompatActivity() {
             .show()
     }
 
+    private fun performComparison() {
+        setLoading(true, "Comparing with cloud data...")
+
+        lifecycleScope.launch {
+            when (val result = SupabaseBackupManager.compareWithCloud(this@CloudBackupActivity)) {
+                is SupabaseBackupManager.ComparisonResult.Success -> {
+                    setLoading(false)
+                    showComparisonDialog(result)
+                }
+                is SupabaseBackupManager.ComparisonResult.Error -> {
+                    setLoading(false)
+                    showStatus("Comparison failed: ${result.message}", isSuccess = false)
+                }
+            }
+        }
+    }
+
+    private fun showComparisonDialog(result: SupabaseBackupManager.ComparisonResult.Success) {
+        val message = buildString {
+            appendLine("Cloud Backup Date: ${dateFormat.format(Date(result.cloudBackupDate))}")
+            appendLine()
+            appendLine("LOCAL DATA:")
+            appendLine("  Students: ${result.localCounts.students}")
+            appendLine("  Payments: ${result.localCounts.payments}")
+            appendLine("  Classes: ${result.localCounts.classes}")
+            appendLine("  Lessons: ${result.localCounts.lessons}")
+            appendLine("  Notes: ${result.localCounts.notes}")
+            appendLine("  Debts: ${result.localCounts.debts}")
+            appendLine()
+            appendLine("CLOUD DATA:")
+            appendLine("  Students: ${result.cloudCounts.students}")
+            appendLine("  Payments: ${result.cloudCounts.payments}")
+            appendLine("  Classes: ${result.cloudCounts.classes}")
+            appendLine("  Lessons: ${result.cloudCounts.lessons}")
+            appendLine("  Notes: ${result.cloudCounts.notes}")
+            appendLine("  Debts: ${result.cloudCounts.debts}")
+            appendLine()
+            appendLine("DIFFERENCES:")
+            append(result.differences.toSummaryString())
+        }
+
+        val dialogBuilder = AlertDialog.Builder(this)
+            .setTitle("Cloud vs Local Comparison")
+            .setMessage(message)
+            .setNegativeButton("Close", null)
+
+        if (result.differences.hasDifferences()) {
+            // Show options if there are differences
+            if (result.differences.newStudentsInCloud.isNotEmpty() ||
+                result.differences.newClassesInCloud.isNotEmpty() ||
+                result.differences.newNotesInCloud.isNotEmpty() ||
+                result.differences.newDebtsInCloud.isNotEmpty() ||
+                result.differences.newPaymentsCount > 0 ||
+                result.differences.newLessonsCount > 0) {
+                dialogBuilder.setPositiveButton("Merge Cloud Data") { _, _ ->
+                    performRestore(mergeMode = true)
+                }
+            }
+            if (result.differences.missingStudentsInCloud.isNotEmpty() ||
+                result.differences.missingClassesInCloud.isNotEmpty() ||
+                result.differences.missingNotesInCloud.isNotEmpty() ||
+                result.differences.missingDebtsInCloud.isNotEmpty() ||
+                result.differences.missingPaymentsCount > 0 ||
+                result.differences.missingLessonsCount > 0) {
+                dialogBuilder.setNeutralButton("Backup to Cloud") { _, _ ->
+                    performBackup()
+                }
+            }
+        }
+
+        dialogBuilder.show()
+    }
+
     private fun performBackup() {
         setLoading(true, "Uploading backup to cloud...")
 
@@ -307,6 +383,7 @@ class CloudBackupActivity : AppCompatActivity() {
         btnSignIn.isEnabled = !loading
         btnSignUp.isEnabled = !loading
         btnSignOut.isEnabled = !loading
+        btnCompareWithCloud.isEnabled = !loading
         btnBackupToCloud.isEnabled = !loading
         btnRestoreFromCloud.isEnabled = !loading
         btnMergeFromCloud.isEnabled = !loading
