@@ -3,6 +3,7 @@ package com.iliass.iliass.ui.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
@@ -16,7 +17,8 @@ class StudentAdapter(
     private var students: List<Student>,
     private var allPayments: List<Payment>,
     private val onStudentClick: (Student) -> Unit,
-    private val onStudentLongClick: ((Student) -> Unit)? = null
+    private val onStudentLongClick: ((Student) -> Unit)? = null,
+    private val onWhatsAppClick: ((Student) -> Unit)? = null
 ) : RecyclerView.Adapter<StudentAdapter.StudentViewHolder>() {
 
     inner class StudentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -26,6 +28,7 @@ class StudentAdapter(
         val locationTimeText: TextView = itemView.findViewById(R.id.locationTimeText)
         val debtText: TextView = itemView.findViewById(R.id.debtText)
         val statusText: TextView = itemView.findViewById(R.id.studentStatusText)
+        val whatsappButton: ImageButton = itemView.findViewById(R.id.whatsappButton)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StudentViewHolder {
@@ -89,6 +92,16 @@ class StudentAdapter(
         holder.cardView.setOnLongClickListener {
             onStudentLongClick?.invoke(student)
             true
+        }
+
+        // WhatsApp button - show only if student has a phone number
+        if (student.phone.isNotEmpty()) {
+            holder.whatsappButton.visibility = View.VISIBLE
+            holder.whatsappButton.setOnClickListener {
+                onWhatsAppClick?.invoke(student)
+            }
+        } else {
+            holder.whatsappButton.visibility = View.GONE
         }
     }
 

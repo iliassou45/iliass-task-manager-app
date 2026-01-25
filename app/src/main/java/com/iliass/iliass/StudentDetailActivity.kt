@@ -2,9 +2,11 @@ package com.iliass.iliass
 
 import android.app.AlertDialog
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -32,6 +34,7 @@ class StudentDetailActivity : AppCompatActivity() {
     private lateinit var studentNotesText: TextView
     private lateinit var addPaymentButton: Button
     private lateinit var editStudentButton: Button
+    private lateinit var whatsappButton: ImageButton
     private lateinit var paymentsRecyclerView: RecyclerView
     private lateinit var emptyPaymentsText: TextView
 
@@ -82,6 +85,7 @@ class StudentDetailActivity : AppCompatActivity() {
         studentNotesText = findViewById(R.id.studentNotesText)
         addPaymentButton = findViewById(R.id.addPaymentButton)
         editStudentButton = findViewById(R.id.editStudentButton)
+        whatsappButton = findViewById(R.id.whatsappButton)
         paymentsRecyclerView = findViewById(R.id.paymentsRecyclerView)
         emptyPaymentsText = findViewById(R.id.emptyPaymentsText)
     }
@@ -147,6 +151,16 @@ class StudentDetailActivity : AppCompatActivity() {
             contactInfoText.visibility = View.GONE
         }
 
+        // Show WhatsApp button if student has a phone number
+        if (student.phone.isNotEmpty()) {
+            whatsappButton.visibility = View.VISIBLE
+            whatsappButton.setOnClickListener {
+                openWhatsApp(student)
+            }
+        } else {
+            whatsappButton.visibility = View.GONE
+        }
+
         // Display location and current time
         if (student.location.isNotEmpty() || student.timezoneOffsetHours != 0.0) {
             val locationTime = buildString {
@@ -206,5 +220,25 @@ class StudentDetailActivity : AppCompatActivity() {
             }
             .setNegativeButton("Cancel", null)
             .show()
+    }
+
+    private fun openWhatsApp(student: Student) {
+        if (student.phone.isEmpty()) {
+            Toast.makeText(this, "No phone number available", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        // Clean the phone number - remove spaces, dashes, etc.
+        val phoneNumber = student.phone.replace(Regex("[^0-9+]"), "")
+
+        try {
+            // Try to open WhatsApp directly with the phone number
+            val intent = Intent(Intent.ACTION_VIEW).apply {
+                data = Uri.parse("https://wa.me/$phoneNumber")
+            }
+            startActivity(intent)
+        } catch (e: Exception) {
+            Toast.makeText(this, "WhatsApp is not installed", Toast.LENGTH_SHORT).show()
+        }
     }
 }
