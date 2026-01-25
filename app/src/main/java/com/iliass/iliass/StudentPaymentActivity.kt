@@ -3,10 +3,15 @@ package com.iliass.iliass
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -36,10 +41,14 @@ class StudentPaymentActivity : AppCompatActivity() {
     private lateinit var lostStudentsText: TextView
     private lateinit var totalThisMonthText: TextView
     private lateinit var totalThisYearText: TextView
+    private lateinit var searchEditText: EditText
+    private lateinit var clearSearchButton: ImageButton
 
     private val studentDatabase by lazy { StudentDatabase.getInstance(this) }
     private var currentTab = 0
     private var pendingImportMergeMode = false
+    private var currentSearchQuery = ""
+    private var allStudentsList: List<Student> = emptyList()
 
     private val importLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
         uri?.let {
@@ -57,6 +66,7 @@ class StudentPaymentActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         initViews()
+        setupSearch()
         setupTabs()
         setupRecyclerView()
         setupFab()
@@ -81,6 +91,26 @@ class StudentPaymentActivity : AppCompatActivity() {
         lostStudentsText = findViewById(R.id.lostStudentsText)
         totalThisMonthText = findViewById(R.id.totalThisMonthText)
         totalThisYearText = findViewById(R.id.totalThisYearText)
+        searchEditText = findViewById(R.id.searchEditText)
+        clearSearchButton = findViewById(R.id.clearSearchButton)
+    }
+
+    private fun setupSearch() {
+        searchEditText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                currentSearchQuery = s?.toString() ?: ""
+                clearSearchButton.visibility = if (currentSearchQuery.isNotEmpty()) View.VISIBLE else View.GONE
+                filterStudents()
+            }
+        })
+
+        clearSearchButton.setOnClickListener {
+            searchEditText.text.clear()
+            currentSearchQuery = ""
+            filterStudents()
+        }
     }
 
     private fun setupTabs() {
@@ -110,9 +140,32 @@ class StudentPaymentActivity : AppCompatActivity() {
             },
             onStudentLongClick = { student ->
                 showStudentOptionsDialog(student)
+            },
+            onWhatsAppClick = { student ->
+                openWhatsApp(student)
             }
         )
         recyclerView.adapter = studentAdapter
+    }
+
+    private fun openWhatsApp(student: Student) {
+        if (student.phone.isEmpty()) {
+            Toast.makeText(this, "No phone number available", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        // Clean the phone number - remove spaces, dashes, etc.
+        val phoneNumber = student.phone.replace(Regex("[^0-9+]"), "")
+
+        try {
+            // Try to open WhatsApp directly with the phone number
+            val intent = Intent(Intent.ACTION_VIEW).apply {
+                data = Uri.parse("https://wa.me/$phoneNumber")
+            }
+            startActivity(intent)
+        } catch (e: Exception) {
+            Toast.makeText(this, "WhatsApp is not installed", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun setupFab() {
@@ -123,18 +176,36 @@ class StudentPaymentActivity : AppCompatActivity() {
     }
 
     private fun loadStudents() {
-        val students = if (currentTab == 0) {
+        allStudentsList = if (currentTab == 0) {
             studentDatabase.getActiveStudents()
         } else {
             studentDatabase.getInactiveStudents()
         }
 
+        filterStudents()
+        updateStatistics()
+    }
+
+    private fun filterStudents() {
         val allPayments = studentDatabase.getAllPayments()
 
-        if (students.isEmpty()) {
+        val filteredStudents = if (currentSearchQuery.isEmpty()) {
+            allStudentsList
+        } else {
+            allStudentsList.filter { student ->
+                student.name.contains(currentSearchQuery, ignoreCase = true) ||
+                student.phone.contains(currentSearchQuery, ignoreCase = true) ||
+                student.email.contains(currentSearchQuery, ignoreCase = true) ||
+                student.location.contains(currentSearchQuery, ignoreCase = true)
+            }
+        }
+
+        if (filteredStudents.isEmpty()) {
             emptyView.visibility = View.VISIBLE
             recyclerView.visibility = View.GONE
-            emptyView.text = if (currentTab == 0) {
+            emptyView.text = if (currentSearchQuery.isNotEmpty()) {
+                "No students found matching \"$currentSearchQuery\""
+            } else if (currentTab == 0) {
                 "No active students.\nTap + to add one."
             } else {
                 "No inactive students."
@@ -144,8 +215,7 @@ class StudentPaymentActivity : AppCompatActivity() {
             recyclerView.visibility = View.VISIBLE
         }
 
-        studentAdapter.updateData(students, allPayments)
-        updateStatistics()
+        studentAdapter.updateData(filteredStudents, allPayments)
     }
 
     private fun updateStatistics() {
