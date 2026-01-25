@@ -1,5 +1,6 @@
 package com.iliass.iliass.adapter
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,7 +13,8 @@ import java.text.DecimalFormat
 
 class StudentCheckboxAdapter(
     private val students: List<Student>,
-    private val selectedStudentIds: MutableSet<String>
+    private val selectedStudentIds: MutableSet<String>,
+    private val studentsInOtherClasses: Map<String, String> = emptyMap() // studentId -> className
 ) : RecyclerView.Adapter<StudentCheckboxAdapter.StudentCheckboxViewHolder>() {
 
     private val decimalFormat = DecimalFormat("#,##0.00")
@@ -31,22 +33,41 @@ class StudentCheckboxAdapter(
 
     override fun onBindViewHolder(holder: StudentCheckboxViewHolder, position: Int) {
         val student = students[position]
+        val otherClassName = studentsInOtherClasses[student.id]
+        val isInOtherClass = otherClassName != null
 
         holder.studentNameText.text = student.name
-        holder.studentInfoText.text = "Monthly: $${decimalFormat.format(student.monthlyAmount)}"
 
-        holder.studentCheckBox.isChecked = student.id in selectedStudentIds
+        if (isInOtherClass) {
+            // Student is in another class - show class name and disable
+            holder.studentInfoText.text = "Already in: $otherClassName"
+            holder.studentInfoText.setTextColor(Color.parseColor("#E53935")) // Red
+            holder.studentCheckBox.isEnabled = false
+            holder.studentCheckBox.isChecked = false
+            holder.itemView.alpha = 0.6f
+            holder.itemView.setOnClickListener(null)
+        } else {
+            // Student is available or already in this class
+            holder.studentInfoText.text = "Monthly: $${decimalFormat.format(student.monthlyAmount)}"
+            holder.studentInfoText.setTextColor(Color.parseColor("#757575")) // Gray
+            holder.studentCheckBox.isEnabled = true
+            holder.itemView.alpha = 1.0f
 
-        holder.studentCheckBox.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) {
-                selectedStudentIds.add(student.id)
-            } else {
-                selectedStudentIds.remove(student.id)
+            // Remove listener to prevent triggering during recycling
+            holder.studentCheckBox.setOnCheckedChangeListener(null)
+            holder.studentCheckBox.isChecked = student.id in selectedStudentIds
+
+            holder.studentCheckBox.setOnCheckedChangeListener { _, isChecked ->
+                if (isChecked) {
+                    selectedStudentIds.add(student.id)
+                } else {
+                    selectedStudentIds.remove(student.id)
+                }
             }
-        }
 
-        holder.itemView.setOnClickListener {
-            holder.studentCheckBox.isChecked = !holder.studentCheckBox.isChecked
+            holder.itemView.setOnClickListener {
+                holder.studentCheckBox.isChecked = !holder.studentCheckBox.isChecked
+            }
         }
     }
 

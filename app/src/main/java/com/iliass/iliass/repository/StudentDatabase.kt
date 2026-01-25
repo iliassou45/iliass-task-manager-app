@@ -341,4 +341,120 @@ class StudentDatabase private constructor(context: Context) {
     fun getPendingLessonsCount(classId: String): Int {
         return lessons.count { it.classId == classId && !it.isCompleted }
     }
+
+    /**
+     * Check if a student is already enrolled in any class
+     * Returns the class if found, null otherwise
+     */
+    fun getStudentCurrentClass(studentId: String): StudentClass? {
+        return classes.find { studentId in it.studentIds }
+    }
+
+    /**
+     * Check if a student is enrolled in any class other than the specified one
+     * Returns the other class if found, null otherwise
+     */
+    fun getStudentOtherClass(studentId: String, excludeClassId: String): StudentClass? {
+        return classes.find { it.id != excludeClassId && studentId in it.studentIds }
+    }
+
+    /**
+     * Check if a student can be added to a class
+     * Returns true if the student is not in any other class
+     */
+    fun canStudentBeAddedToClass(studentId: String, classId: String): Boolean {
+        val currentClass = getStudentCurrentClass(studentId)
+        return currentClass == null || currentClass.id == classId
+    }
+
+    // Export all data for backup
+    fun getAllDataForExport(): StudentDataExport {
+        return StudentDataExport(
+            students = students.toList(),
+            payments = payments.toList(),
+            classes = classes.toList(),
+            lessons = lessons.toList(),
+            classHistory = classHistory.toList(),
+            exportDate = System.currentTimeMillis()
+        )
+    }
+
+    // Import data from backup
+    fun importData(data: StudentDataExport, mergeMode: Boolean = false) {
+        if (mergeMode) {
+            // Merge mode: add new items, skip duplicates
+            data.students.forEach { student ->
+                if (students.none { it.id == student.id }) {
+                    students.add(student)
+                }
+            }
+            data.payments.forEach { payment ->
+                if (payments.none { it.id == payment.id }) {
+                    payments.add(payment)
+                }
+            }
+            data.classes.forEach { studentClass ->
+                if (classes.none { it.id == studentClass.id }) {
+                    classes.add(studentClass)
+                }
+            }
+            data.lessons.forEach { lesson ->
+                if (lessons.none { it.id == lesson.id }) {
+                    lessons.add(lesson)
+                }
+            }
+            data.classHistory.forEach { history ->
+                if (classHistory.none { it.id == history.id }) {
+                    classHistory.add(history)
+                }
+            }
+        } else {
+            // Replace mode: clear and replace all data
+            students.clear()
+            students.addAll(data.students)
+            payments.clear()
+            payments.addAll(data.payments)
+            classes.clear()
+            classes.addAll(data.classes)
+            lessons.clear()
+            lessons.addAll(data.lessons)
+            classHistory.clear()
+            classHistory.addAll(data.classHistory)
+        }
+
+        // Save all data
+        saveStudentsToStorage()
+        savePaymentsToStorage()
+        saveClassesToStorage()
+        saveLessonsToStorage()
+        saveClassHistoryToStorage()
+    }
+
+    // Clear all data
+    fun clearAllData() {
+        students.clear()
+        payments.clear()
+        classes.clear()
+        lessons.clear()
+        classHistory.clear()
+
+        saveStudentsToStorage()
+        savePaymentsToStorage()
+        saveClassesToStorage()
+        saveLessonsToStorage()
+        saveClassHistoryToStorage()
+    }
 }
+
+/**
+ * Data class for exporting all student-related data
+ */
+data class StudentDataExport(
+    val students: List<Student>,
+    val payments: List<Payment>,
+    val classes: List<StudentClass>,
+    val lessons: List<Lesson>,
+    val classHistory: List<ClassStudentHistory>,
+    val exportDate: Long,
+    val version: Int = 1
+)
