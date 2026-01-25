@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Existing permissions... -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CAMERA" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
@@ -226,6 +228,12 @@
         <activity
             android:name=".PDFViewerActivity"
             android:exported="false" />
+
+        <!-- Cloud Backup Activity -->
+        <activity
+            android:name=".CloudBackupActivity"
+            android:exported="false"
+            android:label="Cloud Backup" />
 
         <!-- FileProvider for sharing exported files -->
         <provider
