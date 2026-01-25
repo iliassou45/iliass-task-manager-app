@@ -10,6 +10,9 @@ import com.iliass.iliass.model.StudentClass
 import com.iliass.iliass.model.Lesson
 import com.iliass.iliass.model.ClassStudentHistory
 import com.iliass.iliass.model.HistoryAction
+import com.iliass.iliass.model.Note
+import com.iliass.iliass.model.Debt
+import com.iliass.iliass.util.NoteManager
 
 class StudentDatabase private constructor(context: Context) {
 
@@ -368,19 +371,29 @@ class StudentDatabase private constructor(context: Context) {
     }
 
     // Export all data for backup
-    fun getAllDataForExport(): StudentDataExport {
+    fun getAllDataForExport(context: Context): StudentDataExport {
+        // Get notes from NoteManager
+        val noteManager = NoteManager(context)
+        val notes = noteManager.getAllNotes()
+
+        // Get debts from DebtDatabase
+        val debtDatabase = DebtDatabase.getInstance(context)
+        val debts = debtDatabase.getAllDebts()
+
         return StudentDataExport(
             students = students.toList(),
             payments = payments.toList(),
             classes = classes.toList(),
             lessons = lessons.toList(),
             classHistory = classHistory.toList(),
+            notes = notes,
+            debts = debts,
             exportDate = System.currentTimeMillis()
         )
     }
 
     // Import data from backup
-    fun importData(data: StudentDataExport, mergeMode: Boolean = false) {
+    fun importData(data: StudentDataExport, mergeMode: Boolean = false, context: Context) {
         if (mergeMode) {
             // Merge mode: add new items, skip duplicates
             data.students.forEach { student ->
@@ -428,6 +441,36 @@ class StudentDatabase private constructor(context: Context) {
         saveClassesToStorage()
         saveLessonsToStorage()
         saveClassHistoryToStorage()
+
+        // Import notes
+        val noteManager = NoteManager(context)
+        val existingNotes = noteManager.getAllNotes()
+        data.notes.forEach { note ->
+            if (mergeMode) {
+                // Only add if not exists
+                if (existingNotes.none { it.id == note.id }) {
+                    noteManager.saveNote(note)
+                }
+            } else {
+                noteManager.saveNote(note)
+            }
+        }
+
+        // Import debts
+        val debtDatabase = DebtDatabase.getInstance(context)
+        val existingDebts = debtDatabase.getAllDebts()
+        data.debts.forEach { debt ->
+            if (mergeMode) {
+                // Only add if not exists
+                if (existingDebts.none { it.id == debt.id }) {
+                    debtDatabase.addDebt(debt)
+                }
+            } else {
+                // In replace mode, delete existing and add new
+                debtDatabase.deleteDebt(debt.id)
+                debtDatabase.addDebt(debt)
+            }
+        }
     }
 
     // Clear all data
@@ -455,6 +498,8 @@ data class StudentDataExport(
     val classes: List<StudentClass>,
     val lessons: List<Lesson>,
     val classHistory: List<ClassStudentHistory>,
+    val notes: List<Note> = emptyList(),
+    val debts: List<Debt> = emptyList(),
     val exportDate: Long,
-    val version: Int = 1
+    val version: Int = 2
 )
