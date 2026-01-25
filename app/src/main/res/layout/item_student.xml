@@ -7,7 +7,8 @@
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
     app:cardCornerRadius="12dp"
-    app:cardElevation="4dp">
+    app:cardElevation="4dp"
+    app:cardBackgroundColor="@color/colorCard">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -34,7 +35,7 @@
                     android:text="Student Name"
                     android:textSize="18sp"
                     android:textStyle="bold"
-                    android:textColor="#212121" />
+                    android:textColor="@color/textPrimary" />
 
                 <TextView
                     android:id="@+id/monthlyAmountText"
@@ -42,7 +43,7 @@
                     android:layout_height="wrap_content"
                     android:text="Monthly: $50"
                     android:textSize="14sp"
-                    android:textColor="#757575"
+                    android:textColor="@color/textSecondary"
                     android:layout_marginTop="6dp" />
 
                 <TextView
@@ -51,7 +52,7 @@
                     android:layout_height="wrap_content"
                     android:text="Location &amp; Time"
                     android:textSize="12sp"
-                    android:textColor="#1976D2"
+                    android:textColor="@color/linkColor"
                     android:layout_marginTop="4dp"
                     android:visibility="gone" />
             </LinearLayout>
@@ -70,6 +71,7 @@
                     android:text="Debt: $20"
                     android:textSize="16sp"
                     android:textStyle="bold"
+                    android:textColor="@color/textPrimary"
                     android:layout_gravity="end" />
 
                 <TextView

@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F5F5F5">
+    android:background="@color/colorBackground">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -16,18 +16,18 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="#1976D2"
+            android:background="@color/toolbarBg"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
             app:title="Student Payments"
-            app:titleTextColor="@android:color/white" />
+            app:titleTextColor="@color/toolbarText" />
 
         <!-- Search Bar -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:background="@android:color/white"
+            android:background="@color/searchBarBg"
             android:padding="8dp"
             android:elevation="2dp">
 
@@ -37,6 +37,8 @@
                 android:layout_height="40dp"
                 android:layout_weight="1"
                 android:hint="Search students..."
+                android:textColorHint="@color/searchHint"
+                android:textColor="@color/textPrimary"
                 android:paddingStart="12dp"
                 android:paddingEnd="12dp"
                 android:background="@drawable/search_background"
@@ -62,7 +64,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="16dp"
-            android:background="@android:color/white"
+            android:background="@color/colorSurface"
             android:elevation="4dp">
 
             <!-- Student Count -->
@@ -78,7 +80,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:orientation="vertical"
-                    android:background="#E3F2FD"
+                    android:background="@color/statActiveStudentsBg"
                     android:padding="12dp">
 
                     <TextView
@@ -86,7 +88,7 @@
                         android:layout_height="wrap_content"
                         android:text="Active Students"
                         android:textSize="12sp"
-                        android:textColor="#1976D2"
+                        android:textColor="@color/statActiveStudentsText"
                         android:textStyle="bold" />
 
                     <TextView
@@ -94,7 +96,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="0"
-                        android:textColor="#1976D2"
+                        android:textColor="@color/statActiveStudentsText"
                         android:textSize="20sp"
                         android:textStyle="bold"
                         android:layout_marginTop="4dp" />
@@ -103,7 +105,7 @@
                 <View
                     android:layout_width="1dp"
                     android:layout_height="50dp"
-                    android:background="#E0E0E0"
+                    android:background="@color/divider"
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="8dp" />
 
@@ -112,7 +114,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:orientation="vertical"
-                    android:background="#F3E5F5"
+                    android:background="@color/statLostStudentsBg"
                     android:padding="12dp">
 
                     <TextView
@@ -120,7 +122,7 @@
                         android:layout_height="wrap_content"
                         android:text="Lost Students"
                         android:textSize="12sp"
-                        android:textColor="#8E24AA"
+                        android:textColor="@color/statLostStudentsText"
                         android:textStyle="bold" />
 
                     <TextView
@@ -128,7 +130,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="0"
-                        android:textColor="#8E24AA"
+                        android:textColor="@color/statLostStudentsText"
                         android:textSize="20sp"
                         android:textStyle="bold"
                         android:layout_marginTop="4dp" />
@@ -147,7 +149,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:orientation="vertical"
-                    android:background="#E8F5E9"
+                    android:background="@color/statThisMonthBg"
                     android:padding="12dp">
 
                     <TextView
@@ -155,7 +157,7 @@
                         android:layout_height="wrap_content"
                         android:text="This Month"
                         android:textSize="12sp"
-                        android:textColor="#43A047"
+                        android:textColor="@color/statThisMonthText"
                         android:textStyle="bold" />
 
                     <TextView
@@ -163,7 +165,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="$0"
-                        android:textColor="#43A047"
+                        android:textColor="@color/statThisMonthText"
                         android:textSize="16sp"
                         android:textStyle="bold"
                         android:layout_marginTop="4dp" />
@@ -172,7 +174,7 @@
                 <View
                     android:layout_width="1dp"
                     android:layout_height="50dp"
-                    android:background="#E0E0E0"
+                    android:background="@color/divider"
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="8dp" />
 
@@ -181,7 +183,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:orientation="vertical"
-                    android:background="#FFF3E0"
+                    android:background="@color/statThisYearBg"
                     android:padding="12dp">
 
                     <TextView
@@ -189,7 +191,7 @@
                         android:layout_height="wrap_content"
                         android:text="This Year"
                         android:textSize="12sp"
-                        android:textColor="#F57C00"
+                        android:textColor="@color/statThisYearText"
                         android:textStyle="bold" />
 
                     <TextView
@@ -197,7 +199,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="$0"
-                        android:textColor="#F57C00"
+                        android:textColor="@color/statThisYearText"
                         android:textSize="16sp"
                         android:textStyle="bold"
                         android:layout_marginTop="4dp" />
@@ -210,11 +212,13 @@
             android:id="@+id/tabLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@android:color/white"
+            android:background="@color/colorSurface"
             android:elevation="2dp"
             app:tabMode="fixed"
             app:tabGravity="fill"
-            app:tabIndicatorColor="#1976D2" />
+            app:tabTextColor="@color/textSecondary"
+            app:tabSelectedTextColor="@color/colorPrimary"
+            app:tabIndicatorColor="@color/colorPrimary" />
 
         <!-- Content Frame -->
         <FrameLayout
@@ -237,7 +241,7 @@
                 android:text="No students found.\nTap + to add one."
                 android:textAlignment="center"
                 android:textSize="16sp"
-                android:textColor="@android:color/darker_gray"
+                android:textColor="@color/textSecondary"
                 android:visibility="gone" />
         </FrameLayout>
     </LinearLayout>
@@ -249,7 +253,7 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="24dp"
         android:src="@android:drawable/ic_input_add"
-        app:tint="@android:color/white"
-        app:backgroundTint="#1976D2" />
+        app:tint="@color/textOnPrimary"
+        app:backgroundTint="@color/colorPrimary" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -3,7 +3,50 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <!-- Light Mode Colors -->
+    <!-- Theme-aware colors (Light Mode values) -->
+    <color name="colorPrimary">#2196F3</color>
+    <color name="colorPrimaryVariant">#1976D2</color>
+    <color name="colorSecondary">#4CAF50</color>
+    <color name="colorBackground">#F5F5F5</color>
+    <color name="colorSurface">#FFFFFF</color>
+    <color name="colorCard">#FFFFFF</color>
+    <color name="textPrimary">#212121</color>
+    <color name="textSecondary">#757575</color>
+    <color name="textOnPrimary">#FFFFFF</color>
+
+    <!-- Statistics Card Colors (Light Mode) -->
+    <color name="statActiveStudentsBg">#E3F2FD</color>
+    <color name="statActiveStudentsText">#1976D2</color>
+    <color name="statLostStudentsBg">#F3E5F5</color>
+    <color name="statLostStudentsText">#8E24AA</color>
+    <color name="statThisMonthBg">#E8F5E9</color>
+    <color name="statThisMonthText">#43A047</color>
+    <color name="statThisYearBg">#FFF3E0</color>
+    <color name="statThisYearText">#F57C00</color>
+    <color name="statDebtBg">#FFEBEE</color>
+    <color name="statDebtText">#E53935</color>
+
+    <!-- Search Bar -->
+    <color name="searchBarBg">#FFFFFF</color>
+    <color name="searchHint">#9E9E9E</color>
+
+    <!-- Toolbar -->
+    <color name="toolbarBg">#1976D2</color>
+    <color name="toolbarText">#FFFFFF</color>
+
+    <!-- Divider -->
+    <color name="divider">#E0E0E0</color>
+
+    <!-- Link/Accent Colors -->
+    <color name="linkColor">#1976D2</color>
+
+    <!-- Status Colors -->
+    <color name="statusActiveBg">#E8F5E9</color>
+    <color name="statusActiveText">#43A047</color>
+    <color name="statusInactiveBg">#FFEBEE</color>
+    <color name="statusInactiveText">#E53935</color>
+
+    <!-- Legacy - keep for backward compatibility -->
     <color name="primary_light">#2196F3</color>
     <color name="primary_variant_light">#1976D2</color>
     <color name="secondary_light">#4CAF50</color>
@@ -12,8 +55,6 @@
     <color name="text_primary_light">#212121</color>
     <color name="text_secondary_light">#757575</color>
     <color name="folder_icon_color">#1F51BA</color>
-
-    <!-- Dark Mode Colors -->
     <color name="primary_dark">#64B5F6</color>
     <color name="primary_variant_dark">#42A5F5</color>
     <color name="secondary_dark">#81C784</color>
