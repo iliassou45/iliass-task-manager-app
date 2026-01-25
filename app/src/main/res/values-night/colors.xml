@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Theme-aware colors (Dark Mode values) -->
+    <color name="colorPrimary">#64B5F6</color>
+    <color name="colorPrimaryVariant">#42A5F5</color>
+    <color name="colorSecondary">#81C784</color>
+    <color name="colorBackground">#121212</color>
+    <color name="colorSurface">#1E1E1E</color>
+    <color name="colorCard">#2C2C2C</color>
+    <color name="textPrimary">#E0E0E0</color>
+    <color name="textSecondary">#AAAAAA</color>
+    <color name="textOnPrimary">#000000</color>
+
+    <!-- Statistics Card Colors (Dark Mode) -->
+    <color name="statActiveStudentsBg">#1A237E</color>
+    <color name="statActiveStudentsText">#90CAF9</color>
+    <color name="statLostStudentsBg">#4A148C</color>
+    <color name="statLostStudentsText">#CE93D8</color>
+    <color name="statThisMonthBg">#1B5E20</color>
+    <color name="statThisMonthText">#A5D6A7</color>
+    <color name="statThisYearBg">#E65100</color>
+    <color name="statThisYearText">#FFCC80</color>
+    <color name="statDebtBg">#B71C1C</color>
+    <color name="statDebtText">#EF9A9A</color>
+
+    <!-- Search Bar -->
+    <color name="searchBarBg">#2C2C2C</color>
+    <color name="searchHint">#757575</color>
+
+    <!-- Toolbar -->
+    <color name="toolbarBg">#1E1E1E</color>
+    <color name="toolbarText">#FFFFFF</color>
+
+    <!-- Divider -->
+    <color name="divider">#424242</color>
+
+    <!-- Link/Accent Colors -->
+    <color name="linkColor">#64B5F6</color>
+
+    <!-- Status Colors -->
+    <color name="statusActiveBg">#1B5E20</color>
+    <color name="statusActiveText">#A5D6A7</color>
+    <color name="statusInactiveBg">#B71C1C</color>
+    <color name="statusInactiveText">#EF9A9A</color>
+
+    <!-- Common Colors - same in both modes -->
+    <color name="error">#EF5350</color>
+    <color name="success">#66BB6A</color>
+    <color name="warning">#FFA726</color>
+</resources>
