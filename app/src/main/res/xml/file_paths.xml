@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <!-- External files directory for exported data -->
+    <external-files-path
+        name="student_exports"
+        path="Documents/StudentExports/" />
+
+    <!-- External storage for exported files (older API compatibility) -->
+    <external-path
+        name="external_exports"
+        path="." />
+
+    <!-- Cache directory for temporary files -->
+    <cache-path
+        name="cache"
+        path="." />
+</paths>

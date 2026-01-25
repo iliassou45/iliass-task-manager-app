@@ -1,10 +1,16 @@
 package com.iliass.iliass
 
+import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.FileProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -12,6 +18,8 @@ import com.google.android.material.tabs.TabLayout
 import com.iliass.iliass.adapter.ClassAdapter
 import com.iliass.iliass.model.StudentClass
 import com.iliass.iliass.repository.StudentDatabase
+import com.iliass.iliass.util.StudentDataExportManager
+import java.io.File
 import java.text.DecimalFormat
 
 class ClassesActivity : AppCompatActivity() {
@@ -29,6 +37,13 @@ class ClassesActivity : AppCompatActivity() {
     private lateinit var totalDebtText: TextView
 
     private val decimalFormat = DecimalFormat("#,##0.00")
+    private var pendingImportMergeMode = false
+
+    private val importLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+        uri?.let {
+            performImport(it, pendingImportMergeMode)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -144,5 +159,137 @@ class ClassesActivity : AppCompatActivity() {
     override fun onSupportNavigateUp(): Boolean {
         finish()
         return true
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.menu_classes, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_export_all_json -> {
+                exportAllToJson()
+                true
+            }
+            R.id.action_export_classes_csv -> {
+                exportClassesToCsv()
+                true
+            }
+            R.id.action_export_lessons_csv -> {
+                exportLessonsToCsv()
+                true
+            }
+            R.id.action_import_json -> {
+                showImportConfirmation(false)
+                true
+            }
+            R.id.action_import_merge_json -> {
+                showImportConfirmation(true)
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun exportAllToJson() {
+        when (val result = StudentDataExportManager.exportToJson(this)) {
+            is StudentDataExportManager.ExportResult.Success -> {
+                showExportSuccessDialog(result.filePath, result.format)
+            }
+            is StudentDataExportManager.ExportResult.Error -> {
+                Toast.makeText(this, result.message, Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+
+    private fun exportClassesToCsv() {
+        when (val result = StudentDataExportManager.exportClassesToCsv(this)) {
+            is StudentDataExportManager.ExportResult.Success -> {
+                showExportSuccessDialog(result.filePath, result.format)
+            }
+            is StudentDataExportManager.ExportResult.Error -> {
+                Toast.makeText(this, result.message, Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+
+    private fun exportLessonsToCsv() {
+        when (val result = StudentDataExportManager.exportLessonsToCsv(this)) {
+            is StudentDataExportManager.ExportResult.Success -> {
+                showExportSuccessDialog(result.filePath, result.format)
+            }
+            is StudentDataExportManager.ExportResult.Error -> {
+                Toast.makeText(this, result.message, Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+
+    private fun showExportSuccessDialog(filePath: String, format: String) {
+        AlertDialog.Builder(this)
+            .setTitle("Export Successful")
+            .setMessage("Data exported to $format file:\n\n$filePath")
+            .setPositiveButton("Share") { _, _ ->
+                shareExportedFile(filePath)
+            }
+            .setNegativeButton("OK", null)
+            .show()
+    }
+
+    private fun shareExportedFile(filePath: String) {
+        try {
+            val file = File(filePath)
+            val uri = FileProvider.getUriForFile(
+                this,
+                "${packageName}.fileprovider",
+                file
+            )
+
+            val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                type = if (filePath.endsWith(".json")) "application/json" else "text/csv"
+                putExtra(Intent.EXTRA_STREAM, uri)
+                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            }
+
+            startActivity(Intent.createChooser(shareIntent, "Share Export File"))
+        } catch (e: Exception) {
+            Toast.makeText(this, "Failed to share file: ${e.message}", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun showImportConfirmation(mergeMode: Boolean) {
+        val title = if (mergeMode) "Import & Merge Data" else "Import & Replace Data"
+        val message = if (mergeMode) {
+            "This will add new data from the backup file without replacing existing data.\n\n${StudentDataExportManager.getDataSummary(this)}\n\nContinue?"
+        } else {
+            "WARNING: This will REPLACE all existing data with the backup file.\n\n${StudentDataExportManager.getDataSummary(this)}\n\nContinue?"
+        }
+
+        AlertDialog.Builder(this)
+            .setTitle(title)
+            .setMessage(message)
+            .setPositiveButton("Import") { _, _ ->
+                pendingImportMergeMode = mergeMode
+                importLauncher.launch("application/json")
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+
+    private fun performImport(uri: android.net.Uri, mergeMode: Boolean) {
+        when (val result = StudentDataExportManager.importFromJson(this, uri, mergeMode)) {
+            is StudentDataExportManager.ImportResult.Success -> {
+                AlertDialog.Builder(this)
+                    .setTitle("Import Successful")
+                    .setMessage("Imported:\n- ${result.studentsCount} students\n- ${result.paymentsCount} payments\n- ${result.classesCount} classes\n- ${result.lessonsCount} lessons")
+                    .setPositiveButton("OK") { _, _ ->
+                        updateUI()
+                    }
+                    .show()
+            }
+            is StudentDataExportManager.ImportResult.Error -> {
+                Toast.makeText(this, result.message, Toast.LENGTH_LONG).show()
+            }
+        }
     }
 }

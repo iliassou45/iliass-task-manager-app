@@ -3,11 +3,14 @@ package com.iliass.iliass
 import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.FileProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -17,6 +20,8 @@ import com.iliass.iliass.model.Lesson
 import com.iliass.iliass.model.StudentClass
 import com.iliass.iliass.repository.StudentDatabase
 import com.iliass.iliass.util.PDFManager
+import com.iliass.iliass.util.StudentDataExportManager
+import java.io.File
 import java.text.DecimalFormat
 
 class ClassDetailActivity : AppCompatActivity() {
@@ -171,7 +176,16 @@ class ClassDetailActivity : AppCompatActivity() {
         val allStudents = database.getActiveStudents()
         val selectedStudentIds = studentClass.studentIds.toMutableSet()
 
-        val adapter = StudentCheckboxAdapter(allStudents, selectedStudentIds)
+        // Build a map of students already enrolled in other classes
+        val studentsInOtherClasses = mutableMapOf<String, String>()
+        for (student in allStudents) {
+            val otherClass = database.getStudentOtherClass(student.id, studentClass.id)
+            if (otherClass != null) {
+                studentsInOtherClasses[student.id] = otherClass.name
+            }
+        }
+
+        val adapter = StudentCheckboxAdapter(allStudents, selectedStudentIds, studentsInOtherClasses)
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(this)
 
@@ -260,5 +274,59 @@ class ClassDetailActivity : AppCompatActivity() {
     override fun onSupportNavigateUp(): Boolean {
         finish()
         return true
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.menu_class_detail, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_export_class_report -> {
+                exportClassReport()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun exportClassReport() {
+        when (val result = StudentDataExportManager.exportClassReportCsv(this, studentClass.id)) {
+            is StudentDataExportManager.ExportResult.Success -> {
+                AlertDialog.Builder(this)
+                    .setTitle("Export Successful")
+                    .setMessage("Class report exported to:\n\n${result.filePath}")
+                    .setPositiveButton("Share") { _, _ ->
+                        shareExportedFile(result.filePath)
+                    }
+                    .setNegativeButton("OK", null)
+                    .show()
+            }
+            is StudentDataExportManager.ExportResult.Error -> {
+                Toast.makeText(this, result.message, Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+
+    private fun shareExportedFile(filePath: String) {
+        try {
+            val file = File(filePath)
+            val uri = FileProvider.getUriForFile(
+                this,
+                "${packageName}.fileprovider",
+                file
+            )
+
+            val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                type = "text/csv"
+                putExtra(Intent.EXTRA_STREAM, uri)
+                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            }
+
+            startActivity(Intent.createChooser(shareIntent, "Share Class Report"))
+        } catch (e: Exception) {
+            Toast.makeText(this, "Failed to share file: ${e.message}", Toast.LENGTH_SHORT).show()
+        }
     }
 }

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_export"
+        android:title="Export"
+        android:icon="@android:drawable/ic_menu_upload"
+        app:showAsAction="ifRoom">
+        <menu>
+            <item
+                android:id="@+id/action_export_all_json"
+                android:title="Export All (JSON Backup)" />
+            <item
+                android:id="@+id/action_export_classes_csv"
+                android:title="Export Classes (CSV)" />
+            <item
+                android:id="@+id/action_export_lessons_csv"
+                android:title="Export Lessons (CSV)" />
+        </menu>
+    </item>
+
+    <item
+        android:id="@+id/action_import"
+        android:title="Import"
+        android:icon="@android:drawable/ic_menu_save"
+        app:showAsAction="ifRoom">
+        <menu>
+            <item
+                android:id="@+id/action_import_json"
+                android:title="Import from JSON (Replace)" />
+            <item
+                android:id="@+id/action_import_merge_json"
+                android:title="Import from JSON (Merge)" />
+        </menu>
+    </item>
+
+</menu>
