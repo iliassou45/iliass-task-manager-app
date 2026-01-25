@@ -444,17 +444,24 @@ class StudentDatabase private constructor(context: Context) {
 
         // Import notes
         val noteManager = NoteManager(context)
-        val existingNotes = noteManager.getAllNotes()
+        val existingNotes = noteManager.getAllNotes().toMutableList()
+        var notesAdded = 0
         data.notes.forEach { note ->
             if (mergeMode) {
                 // Only add if not exists
                 if (existingNotes.none { it.id == note.id }) {
-                    noteManager.saveNote(note)
+                    if (noteManager.saveNote(note)) {
+                        existingNotes.add(note) // Keep track of added notes
+                        notesAdded++
+                    }
                 }
             } else {
-                noteManager.saveNote(note)
+                if (noteManager.saveNote(note)) {
+                    notesAdded++
+                }
             }
         }
+        android.util.Log.d("StudentDatabase", "Notes import: ${data.notes.size} in backup, $notesAdded added")
 
         // Import debts
         val debtDatabase = DebtDatabase.getInstance(context)
