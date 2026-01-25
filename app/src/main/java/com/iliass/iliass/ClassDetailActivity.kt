@@ -10,6 +10,7 @@ import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.core.content.FileProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -53,6 +54,11 @@ class ClassDetailActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_class_detail)
+
+        // Set up toolbar
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         database = StudentDatabase.getInstance(this)
 
@@ -124,8 +130,6 @@ class ClassDetailActivity : AppCompatActivity() {
             intent.putExtra("CLASS_ID", studentClass.id)
             startActivity(intent)
         }
-
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
     private fun updateUI() {

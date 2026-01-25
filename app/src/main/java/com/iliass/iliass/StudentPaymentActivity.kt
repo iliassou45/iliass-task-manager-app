@@ -11,6 +11,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.core.content.FileProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -50,7 +51,9 @@ class StudentPaymentActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_student_payment)
 
-        supportActionBar?.title = "Student Payments"
+        // Set up toolbar
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         initViews()
