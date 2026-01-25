@@ -86,6 +86,13 @@ class MainActivity : AppCompatActivity() {
                 description = "Manage student classes, lessons, and track class analytics",
                 icon = "👥",
                 isEnabled = true
+            ),
+            Task(
+                id = 11,
+                title = "☁️ Cloud Backup",
+                description = "Backup and restore your data to Supabase cloud",
+                icon = "☁️",
+                isEnabled = true
             )
         )
 
@@ -141,6 +148,11 @@ class MainActivity : AppCompatActivity() {
             10 -> {
                 // Navigate to Classes activity
                 val intent = Intent(this, ClassesActivity::class.java)
+                startActivity(intent)
+            }
+            11 -> {
+                // Navigate to Cloud Backup activity
+                val intent = Intent(this, CloudBackupActivity::class.java)
                 startActivity(intent)
             }
             else -> {
