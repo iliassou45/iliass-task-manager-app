@@ -104,7 +104,7 @@ class CloudBackupActivity : AppCompatActivity() {
         btnSignUp.setOnClickListener { performSignUp() }
         btnSignOut.setOnClickListener { performSignOut() }
         btnCompareWithCloud.setOnClickListener { performComparison() }
-        btnBackupToCloud.setOnClickListener { performBackup() }
+        btnBackupToCloud.setOnClickListener { showBackupConfirmation() }
         btnRestoreFromCloud.setOnClickListener { showRestoreConfirmation(mergeMode = false) }
         btnMergeFromCloud.setOnClickListener { showRestoreConfirmation(mergeMode = true) }
     }
@@ -314,6 +314,116 @@ class CloudBackupActivity : AppCompatActivity() {
         }
 
         dialogBuilder.show()
+    }
+
+    private fun showBackupConfirmation() {
+        setLoading(true, "Comparing with cloud data...")
+
+        lifecycleScope.launch {
+            when (val result = SupabaseBackupManager.compareWithCloud(this@CloudBackupActivity)) {
+                is SupabaseBackupManager.ComparisonResult.Success -> {
+                    setLoading(false)
+                    showBackupConfirmationDialog(result)
+                }
+                is SupabaseBackupManager.ComparisonResult.Error -> {
+                    setLoading(false)
+                    // No backup exists yet, show simple confirmation
+                    if (result.message.contains("No backup found")) {
+                        showFirstBackupConfirmation()
+                    } else {
+                        showStatus("Could not compare: ${result.message}", isSuccess = false)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun showFirstBackupConfirmation() {
+        val localSummary = SupabaseBackupManager.getDataSummary(this)
+
+        AlertDialog.Builder(this)
+            .setTitle("Create First Backup")
+            .setMessage("No backup exists in cloud yet.\n\nThis will upload your local data:\n\n$localSummary\nDo you want to create your first backup?")
+            .setPositiveButton("Backup Now") { _, _ ->
+                performBackup()
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+
+    private fun showBackupConfirmationDialog(comparison: SupabaseBackupManager.ComparisonResult.Success) {
+        val message = buildString {
+            appendLine("WARNING: This will REPLACE the cloud backup with your local data.")
+            appendLine()
+            appendLine("CURRENT CLOUD BACKUP (will be replaced):")
+            appendLine("  Backup date: ${dateFormat.format(Date(comparison.cloudBackupDate))}")
+            appendLine("  Students: ${comparison.cloudCounts.students}")
+            appendLine("  Payments: ${comparison.cloudCounts.payments}")
+            appendLine("  Classes: ${comparison.cloudCounts.classes}")
+            appendLine("  Lessons: ${comparison.cloudCounts.lessons}")
+            appendLine("  Notes: ${comparison.cloudCounts.notes}")
+            appendLine("  Debts: ${comparison.cloudCounts.debts}")
+            appendLine()
+            appendLine("YOUR LOCAL DATA (will be uploaded):")
+            appendLine("  Students: ${comparison.localCounts.students}")
+            appendLine("  Payments: ${comparison.localCounts.payments}")
+            appendLine("  Classes: ${comparison.localCounts.classes}")
+            appendLine("  Lessons: ${comparison.localCounts.lessons}")
+            appendLine("  Notes: ${comparison.localCounts.notes}")
+            appendLine("  Debts: ${comparison.localCounts.debts}")
+
+            // Show warnings if cloud has more data
+            val warnings = mutableListOf<String>()
+            if (comparison.cloudCounts.students > comparison.localCounts.students) {
+                warnings.add("Cloud has ${comparison.cloudCounts.students - comparison.localCounts.students} more student(s)")
+            }
+            if (comparison.cloudCounts.payments > comparison.localCounts.payments) {
+                warnings.add("Cloud has ${comparison.cloudCounts.payments - comparison.localCounts.payments} more payment(s)")
+            }
+            if (comparison.cloudCounts.classes > comparison.localCounts.classes) {
+                warnings.add("Cloud has ${comparison.cloudCounts.classes - comparison.localCounts.classes} more class(es)")
+            }
+            if (comparison.cloudCounts.lessons > comparison.localCounts.lessons) {
+                warnings.add("Cloud has ${comparison.cloudCounts.lessons - comparison.localCounts.lessons} more lesson(s)")
+            }
+            if (comparison.cloudCounts.notes > comparison.localCounts.notes) {
+                warnings.add("Cloud has ${comparison.cloudCounts.notes - comparison.localCounts.notes} more note(s)")
+            }
+            if (comparison.cloudCounts.debts > comparison.localCounts.debts) {
+                warnings.add("Cloud has ${comparison.cloudCounts.debts - comparison.localCounts.debts} more debt(s)")
+            }
+
+            if (warnings.isNotEmpty()) {
+                appendLine()
+                appendLine("ATTENTION - You may lose data:")
+                warnings.forEach { appendLine("  - $it") }
+            }
+
+            if (comparison.differences.newStudentsInCloud.isNotEmpty() ||
+                comparison.differences.newClassesInCloud.isNotEmpty() ||
+                comparison.differences.newNotesInCloud.isNotEmpty() ||
+                comparison.differences.newDebtsInCloud.isNotEmpty()) {
+                appendLine()
+                appendLine("Items in cloud that will be LOST:")
+                comparison.differences.newStudentsInCloud.forEach { appendLine("  - Student: ${it.name}") }
+                comparison.differences.newClassesInCloud.forEach { appendLine("  - Class: ${it.name}") }
+                comparison.differences.newNotesInCloud.forEach { appendLine("  - Note: ${it.title}") }
+                comparison.differences.newDebtsInCloud.forEach { appendLine("  - Debt: ${it.personName}") }
+            }
+        }
+
+        AlertDialog.Builder(this)
+            .setTitle("Confirm Backup to Cloud")
+            .setMessage(message)
+            .setPositiveButton("Backup Now") { _, _ ->
+                performBackup()
+            }
+            .setNegativeButton("Cancel", null)
+            .setNeutralButton("Merge First") { _, _ ->
+                // First merge cloud data, then backup
+                performRestore(mergeMode = true)
+            }
+            .show()
     }
 
     private fun performBackup() {
