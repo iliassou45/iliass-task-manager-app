@@ -29,7 +29,7 @@ object StudentDataExportManager {
     fun exportToJson(context: Context): ExportResult {
         return try {
             val database = StudentDatabase.getInstance(context)
-            val exportData = database.getAllDataForExport()
+            val exportData = database.getAllDataForExport(context)
             val json = gson.toJson(exportData)
 
             val fileName = "student_data_${dateFormat.format(Date())}.json"
@@ -291,7 +291,7 @@ object StudentDataExportManager {
                 ?: return ImportResult.Error("Invalid data format")
 
             val database = StudentDatabase.getInstance(context)
-            database.importData(importData, mergeMode)
+            database.importData(importData, mergeMode, context)
 
             ImportResult.Success(
                 studentsCount = importData.students.size,
