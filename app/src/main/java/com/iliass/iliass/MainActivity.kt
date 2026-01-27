@@ -68,9 +68,9 @@ class MainActivity : AppCompatActivity() {
             ),
             Task(
                 id = 8,
-                title = "⏰ Task Alarms",
-                description = "Set alarms and reminders for your tasks",
-                icon = "⏰",
+                title = "📋 Task Manager",
+                description = "Organize tasks, track productivity, and stay on top of your goals",
+                icon = "📋",
                 isEnabled = true
             ),
             Task(
@@ -136,8 +136,8 @@ class MainActivity : AppCompatActivity() {
                 startActivity(intent)
             }
             8 -> {
-                // Navigate to Task Alarms activity
-                val intent = Intent(this, AlarmTaskListActivity::class.java)
+                // Navigate to Task Manager activity
+                val intent = Intent(this, TaskManagerActivity::class.java)
                 startActivity(intent)
             }
             9 -> {

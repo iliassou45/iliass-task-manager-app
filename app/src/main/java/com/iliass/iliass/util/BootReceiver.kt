@@ -59,6 +59,17 @@ class BootReceiver : BroadcastReceiver() {
             } catch (e: Exception) {
                 Log.e(TAG, "Error rescheduling alarm tasks", e)
             }
+
+            // Reschedule all task reminders
+            try {
+                Log.d(TAG, "Rescheduling task reminders")
+                val taskManager = TaskManager.getInstance(context)
+                taskManager.rescheduleAllReminders()
+                taskManager.updateOverdueTasks()
+                Log.d(TAG, "Task reminders rescheduled successfully")
+            } catch (e: Exception) {
+                Log.e(TAG, "Error rescheduling task reminders", e)
+            }
         }
     }
 }
