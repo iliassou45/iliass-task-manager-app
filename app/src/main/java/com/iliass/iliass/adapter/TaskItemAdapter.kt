@@ -73,8 +73,8 @@ class TaskItemAdapter(
                 descriptionText.visibility = View.GONE
             }
 
-            // Time
-            timeText.text = formatDateTime(task.dueDate, task.dueTime)
+            // Time - show interval if available, otherwise just the date
+            timeText.text = formatDateTime(task)
 
             // Category
             categoryChip.text = "${task.category.emoji} ${task.category.displayName}"
@@ -162,7 +162,7 @@ class TaskItemAdapter(
             }
         }
 
-        private fun formatDateTime(dueDate: Long, dueTime: Long?): String {
+        private fun formatDateTime(task: DailyTask): String {
             val calendar = Calendar.getInstance()
             val today = Calendar.getInstance().apply {
                 set(Calendar.HOUR_OF_DAY, 0)
@@ -172,20 +172,22 @@ class TaskItemAdapter(
             }
             val tomorrow = (today.clone() as Calendar).apply { add(Calendar.DAY_OF_YEAR, 1) }
 
-            calendar.timeInMillis = dueDate
+            calendar.timeInMillis = task.dueDate
 
             val dateStr = when {
                 calendar.get(Calendar.YEAR) == today.get(Calendar.YEAR) &&
                 calendar.get(Calendar.DAY_OF_YEAR) == today.get(Calendar.DAY_OF_YEAR) -> "Today"
                 calendar.get(Calendar.YEAR) == tomorrow.get(Calendar.YEAR) &&
                 calendar.get(Calendar.DAY_OF_YEAR) == tomorrow.get(Calendar.DAY_OF_YEAR) -> "Tomorrow"
-                else -> SimpleDateFormat("EEE, MMM d", Locale.getDefault()).format(Date(dueDate))
+                else -> SimpleDateFormat("EEE, MMM d", Locale.getDefault()).format(Date(task.dueDate))
             }
 
-            return if (dueTime != null) {
-                val timeCalendar = Calendar.getInstance().apply { timeInMillis = dueTime }
-                val timeStr = SimpleDateFormat("h:mm a", Locale.getDefault()).format(Date(dueTime))
-                "📅 $dateStr at $timeStr"
+            // Show time interval if available
+            return if (task.hasTimeInterval && task.startTime != null && task.endTime != null) {
+                val timeFormat = SimpleDateFormat("h:mm a", Locale.getDefault())
+                val startStr = timeFormat.format(Date(task.startTime))
+                val endStr = timeFormat.format(Date(task.endTime))
+                "📅 $dateStr  🕐 $startStr - $endStr"
             } else {
                 "📅 $dateStr"
             }

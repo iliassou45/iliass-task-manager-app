@@ -3,6 +3,7 @@ package com.iliass.iliass.util
 import android.content.Context
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.iliass.iliass.model.DailyTask
 import com.iliass.iliass.model.Debt
 import com.iliass.iliass.model.Note
 import com.iliass.iliass.model.Student
@@ -63,7 +64,8 @@ object SupabaseBackupManager {
                     classes = exportData.classes.size,
                     lessons = exportData.lessons.size,
                     notes = exportData.notes.size,
-                    debts = exportData.debts.size
+                    debts = exportData.debts.size,
+                    tasks = exportData.tasks.size
                 )
             )
         } catch (e: Exception) {
@@ -108,7 +110,8 @@ object SupabaseBackupManager {
                     classes = importData.classes.size,
                     lessons = importData.lessons.size,
                     notes = importData.notes.size,
-                    debts = importData.debts.size
+                    debts = importData.debts.size,
+                    tasks = importData.tasks.size
                 )
             )
         } catch (e: Exception) {
@@ -145,7 +148,8 @@ object SupabaseBackupManager {
                         classes = importData.classes.size,
                         lessons = importData.lessons.size,
                         notes = importData.notes.size,
-                        debts = importData.debts.size
+                        debts = importData.debts.size,
+                        tasks = importData.tasks.size
                     )
                 )
             } else {
@@ -213,6 +217,12 @@ object SupabaseBackupManager {
             val newLessonsInCloud = cloudData.lessons.size - localData.lessons.filter { it.id in cloudLessonIds }.size
             val missingLessonsInCloud = localData.lessons.size - cloudData.lessons.filter { it.id in localLessonIds }.size
 
+            // Compare tasks
+            val localTaskIds = localData.tasks.map { it.id }.toSet()
+            val cloudTaskIds = cloudData.tasks.map { it.id }.toSet()
+            val newTasksInCloud = cloudData.tasks.filter { it.id !in localTaskIds }
+            val missingTasksInCloud = localData.tasks.filter { it.id !in cloudTaskIds }
+
             ComparisonResult.Success(
                 cloudBackupDate = cloudData.exportDate,
                 localCounts = ItemCounts(
@@ -221,7 +231,8 @@ object SupabaseBackupManager {
                     classes = localData.classes.size,
                     lessons = localData.lessons.size,
                     notes = localData.notes.size,
-                    debts = localData.debts.size
+                    debts = localData.debts.size,
+                    tasks = localData.tasks.size
                 ),
                 cloudCounts = ItemCounts(
                     students = cloudData.students.size,
@@ -229,7 +240,8 @@ object SupabaseBackupManager {
                     classes = cloudData.classes.size,
                     lessons = cloudData.lessons.size,
                     notes = cloudData.notes.size,
-                    debts = cloudData.debts.size
+                    debts = cloudData.debts.size,
+                    tasks = cloudData.tasks.size
                 ),
                 differences = DataDifferences(
                     newStudentsInCloud = newStudentsInCloud,
@@ -240,6 +252,8 @@ object SupabaseBackupManager {
                     missingNotesInCloud = missingNotesInCloud,
                     newDebtsInCloud = newDebtsInCloud,
                     missingDebtsInCloud = missingDebtsInCloud,
+                    newTasksInCloud = newTasksInCloud,
+                    missingTasksInCloud = missingTasksInCloud,
                     newPaymentsCount = newPaymentsInCloud,
                     missingPaymentsCount = missingPaymentsInCloud,
                     newLessonsCount = newLessonsInCloud,
@@ -286,6 +300,10 @@ object SupabaseBackupManager {
         val debtDatabase = DebtDatabase.getInstance(context)
         val debts = debtDatabase.getAllDebts()
 
+        // Get tasks
+        val taskManager = TaskManager.getInstance(context)
+        val tasks = taskManager.getAllTasks()
+
         return buildString {
             appendLine("Current Data:")
             appendLine("• Students: ${students.size}")
@@ -294,6 +312,7 @@ object SupabaseBackupManager {
             appendLine("• Lessons: ${lessons.size}")
             appendLine("• Notes: ${notes.size}")
             appendLine("• Debts: ${debts.size}")
+            appendLine("• Tasks: ${tasks.size}")
         }
     }
 
@@ -303,10 +322,11 @@ object SupabaseBackupManager {
         val classes: Int,
         val lessons: Int,
         val notes: Int = 0,
-        val debts: Int = 0
+        val debts: Int = 0,
+        val tasks: Int = 0
     ) {
         fun toDisplayString(): String {
-            return "Students: $students, Payments: $payments, Classes: $classes, Lessons: $lessons, Notes: $notes, Debts: $debts"
+            return "Students: $students, Payments: $payments, Classes: $classes, Lessons: $lessons, Notes: $notes, Debts: $debts, Tasks: $tasks"
         }
     }
 
@@ -353,6 +373,8 @@ object SupabaseBackupManager {
         val missingNotesInCloud: List<Note>,
         val newDebtsInCloud: List<Debt>,
         val missingDebtsInCloud: List<Debt>,
+        val newTasksInCloud: List<DailyTask> = emptyList(),
+        val missingTasksInCloud: List<DailyTask> = emptyList(),
         val newPaymentsCount: Int,
         val missingPaymentsCount: Int,
         val newLessonsCount: Int,
@@ -367,6 +389,8 @@ object SupabaseBackupManager {
                     missingNotesInCloud.isNotEmpty() ||
                     newDebtsInCloud.isNotEmpty() ||
                     missingDebtsInCloud.isNotEmpty() ||
+                    newTasksInCloud.isNotEmpty() ||
+                    missingTasksInCloud.isNotEmpty() ||
                     newPaymentsCount > 0 ||
                     missingPaymentsCount > 0 ||
                     newLessonsCount > 0 ||
@@ -389,6 +413,9 @@ object SupabaseBackupManager {
             if (newDebtsInCloud.isNotEmpty()) {
                 newDebtsInCloud.forEach { sb.appendLine("  + Debt: ${it.personName}") }
             }
+            if (newTasksInCloud.isNotEmpty()) {
+                newTasksInCloud.forEach { sb.appendLine("  + Task: ${it.title}") }
+            }
             if (newPaymentsCount > 0) {
                 sb.appendLine("  + $newPaymentsCount new payment(s)")
             }
@@ -398,6 +425,7 @@ object SupabaseBackupManager {
 
             if (missingStudentsInCloud.isNotEmpty() || missingClassesInCloud.isNotEmpty() ||
                 missingNotesInCloud.isNotEmpty() || missingDebtsInCloud.isNotEmpty() ||
+                missingTasksInCloud.isNotEmpty() ||
                 missingPaymentsCount > 0 || missingLessonsCount > 0) {
                 sb.appendLine()
                 sb.appendLine("MISSING in Cloud (only in local):")
@@ -405,6 +433,7 @@ object SupabaseBackupManager {
                 missingClassesInCloud.forEach { sb.appendLine("  - Class: ${it.name}") }
                 missingNotesInCloud.forEach { sb.appendLine("  - Note: ${it.title}") }
                 missingDebtsInCloud.forEach { sb.appendLine("  - Debt: ${it.personName}") }
+                missingTasksInCloud.forEach { sb.appendLine("  - Task: ${it.title}") }
                 if (missingPaymentsCount > 0) {
                     sb.appendLine("  - $missingPaymentsCount payment(s)")
                 }

@@ -5,6 +5,7 @@ import android.app.TimePickerDialog
 import android.os.Bundle
 import android.view.View
 import android.widget.*
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SwitchCompat
 import com.google.android.material.button.MaterialButton
@@ -27,8 +28,12 @@ class AddEditTaskActivity : AppCompatActivity() {
     private lateinit var radioGroupPriority: RadioGroup
     private lateinit var spinnerCategory: Spinner
     private lateinit var textSelectedDate: TextView
-    private lateinit var textSelectedTime: TextView
-    private lateinit var btnClearTime: ImageButton
+    private lateinit var switchTimeInterval: SwitchCompat
+    private lateinit var timeIntervalLayout: LinearLayout
+    private lateinit var textStartTime: TextView
+    private lateinit var textEndTime: TextView
+    private lateinit var textConflictWarning: TextView
+    private lateinit var durationLayout: LinearLayout
     private lateinit var textDuration: TextView
     private lateinit var switchReminder: SwitchCompat
     private lateinit var reminderOptionsLayout: LinearLayout
@@ -37,7 +42,9 @@ class AddEditTaskActivity : AppCompatActivity() {
     private lateinit var headerTitle: TextView
 
     private var selectedDueDate: Long = System.currentTimeMillis()
-    private var selectedDueTime: Long? = null
+    private var selectedStartTime: Long? = null
+    private var selectedEndTime: Long? = null
+    private var hasTimeInterval: Boolean = false
     private var selectedReminderTime: Long? = null
     private var estimatedMinutes: Int = 30
     private var editingTaskId: String? = null
@@ -65,6 +72,7 @@ class AddEditTaskActivity : AppCompatActivity() {
         } else {
             // Set default date to today
             updateDateDisplay()
+            updateDurationDisplay()
         }
     }
 
@@ -75,8 +83,12 @@ class AddEditTaskActivity : AppCompatActivity() {
         radioGroupPriority = findViewById(R.id.radioGroupPriority)
         spinnerCategory = findViewById(R.id.spinnerCategory)
         textSelectedDate = findViewById(R.id.textSelectedDate)
-        textSelectedTime = findViewById(R.id.textSelectedTime)
-        btnClearTime = findViewById(R.id.btnClearTime)
+        switchTimeInterval = findViewById(R.id.switchTimeInterval)
+        timeIntervalLayout = findViewById(R.id.timeIntervalLayout)
+        textStartTime = findViewById(R.id.textStartTime)
+        textEndTime = findViewById(R.id.textEndTime)
+        textConflictWarning = findViewById(R.id.textConflictWarning)
+        durationLayout = findViewById(R.id.durationLayout)
         textDuration = findViewById(R.id.textDuration)
         switchReminder = findViewById(R.id.switchReminder)
         reminderOptionsLayout = findViewById(R.id.reminderOptionsLayout)
@@ -98,17 +110,36 @@ class AddEditTaskActivity : AppCompatActivity() {
         }
 
         textSelectedDate.setOnClickListener {
-            showDatePicker()
+            if (!isViewMode) showDatePicker()
         }
 
-        textSelectedTime.setOnClickListener {
-            showTimePicker()
+        // Time interval toggle
+        switchTimeInterval.setOnCheckedChangeListener { _, isChecked ->
+            hasTimeInterval = isChecked
+            timeIntervalLayout.visibility = if (isChecked) View.VISIBLE else View.GONE
+            durationLayout.visibility = if (isChecked) View.GONE else View.VISIBLE
+            textConflictWarning.visibility = View.GONE
+
+            if (isChecked && selectedStartTime == null) {
+                // Set default times: current hour to current hour + 1
+                val calendar = Calendar.getInstance()
+                calendar.set(Calendar.MINUTE, 0)
+                calendar.set(Calendar.SECOND, 0)
+                selectedStartTime = calendar.timeInMillis
+
+                calendar.add(Calendar.HOUR_OF_DAY, 1)
+                selectedEndTime = calendar.timeInMillis
+
+                updateTimeIntervalDisplay()
+            }
         }
 
-        btnClearTime.setOnClickListener {
-            selectedDueTime = null
-            textSelectedTime.text = "No specific time"
-            btnClearTime.visibility = View.GONE
+        textStartTime.setOnClickListener {
+            if (!isViewMode) showStartTimePicker()
+        }
+
+        textEndTime.setOnClickListener {
+            if (!isViewMode) showEndTimePicker()
         }
 
         // Duration controls
@@ -146,17 +177,25 @@ class AddEditTaskActivity : AppCompatActivity() {
         switchReminder.setOnCheckedChangeListener { _, isChecked ->
             reminderOptionsLayout.visibility = if (isChecked) View.VISIBLE else View.GONE
             if (isChecked && selectedReminderTime == null) {
-                // Default to 30 minutes before due time
                 setDefaultReminderTime()
             }
         }
 
         textReminderTime.setOnClickListener {
-            showReminderTimePicker()
+            if (!isViewMode) showReminderTimePicker()
         }
 
         btnSave.setOnClickListener {
-            saveTask()
+            if (isViewMode) {
+                // Switch to edit mode
+                isViewMode = false
+                headerTitle.text = "✏️ Edit Task"
+                btnSave.text = "Update Task"
+                enableEditing(true)
+            } else {
+                // Save the task
+                saveTask()
+            }
         }
     }
 
@@ -181,14 +220,22 @@ class AddEditTaskActivity : AppCompatActivity() {
         // Category
         spinnerCategory.setSelection(task.category.ordinal)
 
-        // Date and Time
+        // Date
         selectedDueDate = task.dueDate
         updateDateDisplay()
 
-        selectedDueTime = task.dueTime
-        if (selectedDueTime != null) {
-            textSelectedTime.text = timeFormat.format(Date(selectedDueTime!!))
-            btnClearTime.visibility = View.VISIBLE
+        // Time Interval
+        hasTimeInterval = task.hasTimeInterval
+        switchTimeInterval.isChecked = hasTimeInterval
+        if (hasTimeInterval) {
+            selectedStartTime = task.startTime
+            selectedEndTime = task.endTime
+            timeIntervalLayout.visibility = View.VISIBLE
+            durationLayout.visibility = View.GONE
+            updateTimeIntervalDisplay()
+        } else {
+            timeIntervalLayout.visibility = View.GONE
+            durationLayout.visibility = View.VISIBLE
         }
 
         // Duration
@@ -205,13 +252,6 @@ class AddEditTaskActivity : AppCompatActivity() {
         }
 
         if (isViewMode) {
-            // Disable editing in view mode
-            btnSave.setOnClickListener {
-                isViewMode = false
-                headerTitle.text = "✏️ Edit Task"
-                btnSave.text = "Update Task"
-                enableEditing(true)
-            }
             enableEditing(false)
         }
     }
@@ -220,14 +260,22 @@ class AddEditTaskActivity : AppCompatActivity() {
         editTitle.isEnabled = enabled
         editDescription.isEnabled = enabled
         editNotes.isEnabled = enabled
-        radioGroupPriority.isEnabled = enabled
+
         for (i in 0 until radioGroupPriority.childCount) {
             radioGroupPriority.getChildAt(i).isEnabled = enabled
         }
+
         spinnerCategory.isEnabled = enabled
-        textSelectedDate.isClickable = enabled
-        textSelectedTime.isClickable = enabled
+        switchTimeInterval.isEnabled = enabled
         switchReminder.isEnabled = enabled
+
+        // Duration buttons
+        findViewById<MaterialButton>(R.id.btnDecreaseDuration).isEnabled = enabled
+        findViewById<MaterialButton>(R.id.btnIncreaseDuration).isEnabled = enabled
+        findViewById<Chip>(R.id.chip15min).isEnabled = enabled
+        findViewById<Chip>(R.id.chip30min).isEnabled = enabled
+        findViewById<Chip>(R.id.chip1hr).isEnabled = enabled
+        findViewById<Chip>(R.id.chip2hr).isEnabled = enabled
     }
 
     private fun showDatePicker() {
@@ -240,6 +288,7 @@ class AddEditTaskActivity : AppCompatActivity() {
                 calendar.set(Calendar.MILLISECOND, 0)
                 selectedDueDate = calendar.timeInMillis
                 updateDateDisplay()
+                checkTimeConflicts()
             },
             calendar.get(Calendar.YEAR),
             calendar.get(Calendar.MONTH),
@@ -247,10 +296,10 @@ class AddEditTaskActivity : AppCompatActivity() {
         ).show()
     }
 
-    private fun showTimePicker() {
+    private fun showStartTimePicker() {
         val calendar = Calendar.getInstance()
-        if (selectedDueTime != null) {
-            calendar.timeInMillis = selectedDueTime!!
+        if (selectedStartTime != null) {
+            calendar.timeInMillis = selectedStartTime!!
         }
 
         TimePickerDialog(
@@ -259,9 +308,16 @@ class AddEditTaskActivity : AppCompatActivity() {
                 calendar.set(Calendar.HOUR_OF_DAY, hour)
                 calendar.set(Calendar.MINUTE, minute)
                 calendar.set(Calendar.SECOND, 0)
-                selectedDueTime = calendar.timeInMillis
-                textSelectedTime.text = timeFormat.format(Date(selectedDueTime!!))
-                btnClearTime.visibility = View.VISIBLE
+                selectedStartTime = calendar.timeInMillis
+
+                // Auto-set end time if not set or if it's before start time
+                if (selectedEndTime == null || selectedEndTime!! <= selectedStartTime!!) {
+                    calendar.add(Calendar.HOUR_OF_DAY, 1)
+                    selectedEndTime = calendar.timeInMillis
+                }
+
+                updateTimeIntervalDisplay()
+                checkTimeConflicts()
             },
             calendar.get(Calendar.HOUR_OF_DAY),
             calendar.get(Calendar.MINUTE),
@@ -269,16 +325,86 @@ class AddEditTaskActivity : AppCompatActivity() {
         ).show()
     }
 
+    private fun showEndTimePicker() {
+        val calendar = Calendar.getInstance()
+        if (selectedEndTime != null) {
+            calendar.timeInMillis = selectedEndTime!!
+        }
+
+        TimePickerDialog(
+            this,
+            { _, hour, minute ->
+                calendar.set(Calendar.HOUR_OF_DAY, hour)
+                calendar.set(Calendar.MINUTE, minute)
+                calendar.set(Calendar.SECOND, 0)
+                val newEndTime = calendar.timeInMillis
+
+                // Validate end time is after start time
+                if (selectedStartTime != null && newEndTime <= selectedStartTime!!) {
+                    Toast.makeText(this, "End time must be after start time", Toast.LENGTH_SHORT).show()
+                    return@TimePickerDialog
+                }
+
+                selectedEndTime = newEndTime
+                updateTimeIntervalDisplay()
+                checkTimeConflicts()
+            },
+            calendar.get(Calendar.HOUR_OF_DAY),
+            calendar.get(Calendar.MINUTE),
+            false
+        ).show()
+    }
+
+    private fun updateTimeIntervalDisplay() {
+        if (selectedStartTime != null) {
+            textStartTime.text = timeFormat.format(Date(selectedStartTime!!))
+        } else {
+            textStartTime.text = "Select start time"
+        }
+
+        if (selectedEndTime != null) {
+            textEndTime.text = timeFormat.format(Date(selectedEndTime!!))
+        } else {
+            textEndTime.text = "Select end time"
+        }
+
+        // Calculate and show duration
+        if (selectedStartTime != null && selectedEndTime != null) {
+            val durationMinutes = ((selectedEndTime!! - selectedStartTime!!) / (1000 * 60)).toInt()
+            estimatedMinutes = durationMinutes
+        }
+    }
+
+    private fun checkTimeConflicts() {
+        if (!hasTimeInterval || selectedStartTime == null || selectedEndTime == null) {
+            textConflictWarning.visibility = View.GONE
+            return
+        }
+
+        val conflicts = taskManager.checkTimeConflicts(
+            selectedDueDate,
+            selectedStartTime!!,
+            selectedEndTime!!,
+            editingTaskId
+        )
+
+        if (conflicts.isNotEmpty()) {
+            val conflictMessages = conflicts.joinToString("\n") { "⚠️ ${it.message}" }
+            textConflictWarning.text = conflictMessages
+            textConflictWarning.visibility = View.VISIBLE
+        } else {
+            textConflictWarning.visibility = View.GONE
+        }
+    }
+
     private fun showReminderTimePicker() {
         val calendar = Calendar.getInstance()
 
-        // First pick date
         DatePickerDialog(
             this,
             { _, year, month, day ->
                 calendar.set(year, month, day)
 
-                // Then pick time
                 TimePickerDialog(
                     this,
                     { _, hour, minute ->
@@ -302,8 +428,8 @@ class AddEditTaskActivity : AppCompatActivity() {
 
     private fun setDefaultReminderTime() {
         val calendar = Calendar.getInstance()
-        calendar.timeInMillis = selectedDueTime ?: selectedDueDate
-        calendar.add(Calendar.MINUTE, -30)
+        calendar.timeInMillis = selectedStartTime ?: selectedDueDate
+        calendar.add(Calendar.MINUTE, -15)
         selectedReminderTime = calendar.timeInMillis
         textReminderTime.text = SimpleDateFormat("MMM d, h:mm a", Locale.getDefault())
             .format(Date(selectedReminderTime!!))
@@ -345,6 +471,37 @@ class AddEditTaskActivity : AppCompatActivity() {
             return
         }
 
+        // Validate time interval
+        if (hasTimeInterval) {
+            if (selectedStartTime == null || selectedEndTime == null) {
+                Toast.makeText(this, "Please select both start and end times", Toast.LENGTH_SHORT).show()
+                return
+            }
+
+            // Check for conflicts
+            val conflicts = taskManager.checkTimeConflicts(
+                selectedDueDate,
+                selectedStartTime!!,
+                selectedEndTime!!,
+                editingTaskId
+            )
+
+            if (conflicts.isNotEmpty()) {
+                AlertDialog.Builder(this)
+                    .setTitle("Time Conflict")
+                    .setMessage("This time slot conflicts with existing tasks:\n\n${conflicts.joinToString("\n") { it.message }}\n\nDo you want to save anyway?")
+                    .setPositiveButton("Save Anyway") { _, _ -> performSave() }
+                    .setNegativeButton("Cancel", null)
+                    .show()
+                return
+            }
+        }
+
+        performSave()
+    }
+
+    private fun performSave() {
+        val title = editTitle.text?.toString()?.trim() ?: ""
         val description = editDescription.text?.toString()?.trim() ?: ""
         val notes = editNotes.text?.toString()?.trim() ?: ""
 
@@ -366,7 +523,9 @@ class AddEditTaskActivity : AppCompatActivity() {
                 category = category,
                 priority = priority,
                 dueDate = selectedDueDate,
-                dueTime = selectedDueTime,
+                startTime = if (hasTimeInterval) selectedStartTime else null,
+                endTime = if (hasTimeInterval) selectedEndTime else null,
+                hasTimeInterval = hasTimeInterval,
                 estimatedMinutes = estimatedMinutes,
                 notes = notes,
                 reminderEnabled = switchReminder.isChecked,
@@ -400,7 +559,9 @@ class AddEditTaskActivity : AppCompatActivity() {
             category = category,
             priority = priority,
             dueDate = selectedDueDate,
-            dueTime = selectedDueTime,
+            startTime = if (hasTimeInterval) selectedStartTime else null,
+            endTime = if (hasTimeInterval) selectedEndTime else null,
+            hasTimeInterval = hasTimeInterval,
             estimatedMinutes = estimatedMinutes,
             notes = notes,
             reminderEnabled = switchReminder.isChecked,
