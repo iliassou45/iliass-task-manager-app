@@ -215,104 +215,7 @@
 
                 </com.google.android.material.card.MaterialCardView>
 
-                <!-- Date and Time Selection -->
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    app:cardElevation="2dp"
-                    app:cardCornerRadius="12dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="16dp">
-
-                        <!-- Due Date -->
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="📅 Due Date *"
-                                android:textSize="14sp"
-                                android:textColor="?android:attr/textColorSecondary"
-                                android:layout_marginBottom="8dp" />
-
-                            <TextView
-                                android:id="@+id/textSelectedDate"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="Select Date"
-                                android:textSize="16sp"
-                                android:textColor="?android:attr/textColorPrimary"
-                                android:padding="12dp"
-                                android:background="?attr/selectableItemBackground"
-                                android:drawableEnd="@android:drawable/ic_menu_my_calendar" />
-
-                        </LinearLayout>
-
-                        <View
-                            android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:background="#E0E0E0"
-                            android:layout_marginVertical="12dp" />
-
-                        <!-- Due Time (Optional) -->
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="⏰ Due Time (Optional)"
-                                android:textSize="14sp"
-                                android:textColor="?android:attr/textColorSecondary"
-                                android:layout_marginBottom="8dp" />
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:orientation="horizontal"
-                                android:gravity="center_vertical">
-
-                                <TextView
-                                    android:id="@+id/textSelectedTime"
-                                    android:layout_width="0dp"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="1"
-                                    android:text="No specific time"
-                                    android:textSize="16sp"
-                                    android:textColor="?android:attr/textColorPrimary"
-                                    android:padding="12dp"
-                                    android:background="?attr/selectableItemBackground"
-                                    android:drawableEnd="@android:drawable/ic_menu_recent_history" />
-
-                                <ImageButton
-                                    android:id="@+id/btnClearTime"
-                                    android:layout_width="36dp"
-                                    android:layout_height="36dp"
-                                    android:background="?attr/selectableItemBackgroundBorderless"
-                                    android:src="@android:drawable/ic_menu_close_clear_cancel"
-                                    android:tint="#9E9E9E"
-                                    android:visibility="gone"
-                                    android:contentDescription="Clear time" />
-
-                            </LinearLayout>
-
-                        </LinearLayout>
-
-                    </LinearLayout>
-
-                </com.google.android.material.card.MaterialCardView>
-
-                <!-- Estimated Time -->
+                <!-- Date Selection -->
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -329,10 +232,39 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="⏱️ Estimated Duration"
+                            android:text="📅 Date *"
                             android:textSize="14sp"
                             android:textColor="?android:attr/textColorSecondary"
-                            android:layout_marginBottom="12dp" />
+                            android:layout_marginBottom="8dp" />
+
+                        <TextView
+                            android:id="@+id/textSelectedDate"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Select Date"
+                            android:textSize="16sp"
+                            android:textColor="?android:attr/textColorPrimary"
+                            android:padding="12dp"
+                            android:background="?attr/selectableItemBackground"
+                            android:drawableEnd="@android:drawable/ic_menu_my_calendar" />
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Time Interval Toggle -->
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    app:cardElevation="2dp"
+                    app:cardCornerRadius="12dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="16dp">
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -340,78 +272,246 @@
                             android:orientation="horizontal"
                             android:gravity="center_vertical">
 
-                            <com.google.android.material.button.MaterialButton
-                                android:id="@+id/btnDecreaseDuration"
-                                android:layout_width="48dp"
-                                android:layout_height="48dp"
-                                android:text="-"
-                                android:textSize="20sp"
-                                app:cornerRadius="24dp"
-                                style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
-
-                            <TextView
-                                android:id="@+id/textDuration"
+                            <LinearLayout
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:text="30 minutes"
-                                android:textSize="18sp"
-                                android:textStyle="bold"
-                                android:textColor="?android:attr/textColorPrimary"
-                                android:gravity="center" />
+                                android:orientation="vertical">
 
-                            <com.google.android.material.button.MaterialButton
-                                android:id="@+id/btnIncreaseDuration"
-                                android:layout_width="48dp"
-                                android:layout_height="48dp"
-                                android:text="+"
-                                android:textSize="20sp"
-                                app:cornerRadius="24dp"
-                                style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="⏰ Schedule Time Block"
+                                    android:textSize="16sp"
+                                    android:textColor="?android:attr/textColorPrimary" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Set start and end time for this task"
+                                    android:textSize="12sp"
+                                    android:textColor="?android:attr/textColorSecondary" />
+
+                            </LinearLayout>
+
+                            <androidx.appcompat.widget.SwitchCompat
+                                android:id="@+id/switchTimeInterval"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" />
 
                         </LinearLayout>
 
-                        <!-- Quick duration buttons -->
+                        <!-- Time Interval Layout (shown when switch is on) -->
                         <LinearLayout
+                            android:id="@+id/timeIntervalLayout"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:layout_marginTop="12dp"
-                            android:gravity="center">
+                            android:orientation="vertical"
+                            android:layout_marginTop="16dp"
+                            android:visibility="gone">
 
-                            <com.google.android.material.chip.Chip
-                                android:id="@+id/chip15min"
-                                android:layout_width="wrap_content"
+                            <LinearLayout
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="15m"
-                                style="@style/Widget.MaterialComponents.Chip.Choice" />
+                                android:orientation="horizontal">
 
-                            <com.google.android.material.chip.Chip
-                                android:id="@+id/chip30min"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="30m"
-                                style="@style/Widget.MaterialComponents.Chip.Choice" />
+                                <!-- Start Time -->
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:orientation="vertical"
+                                    android:layout_marginEnd="8dp">
 
-                            <com.google.android.material.chip.Chip
-                                android:id="@+id/chip1hr"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="1h"
-                                style="@style/Widget.MaterialComponents.Chip.Choice" />
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Start Time"
+                                        android:textSize="12sp"
+                                        android:textColor="?android:attr/textColorSecondary"
+                                        android:layout_marginBottom="4dp" />
 
-                            <com.google.android.material.chip.Chip
-                                android:id="@+id/chip2hr"
-                                android:layout_width="wrap_content"
+                                    <TextView
+                                        android:id="@+id/textStartTime"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:text="Select start"
+                                        android:textSize="16sp"
+                                        android:textStyle="bold"
+                                        android:textColor="#4CAF50"
+                                        android:padding="12dp"
+                                        android:background="@drawable/time_selector_background"
+                                        android:gravity="center" />
+
+                                </LinearLayout>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="→"
+                                    android:textSize="20sp"
+                                    android:textColor="?android:attr/textColorSecondary"
+                                    android:layout_gravity="center" />
+
+                                <!-- End Time -->
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:orientation="vertical"
+                                    android:layout_marginStart="8dp">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="End Time"
+                                        android:textSize="12sp"
+                                        android:textColor="?android:attr/textColorSecondary"
+                                        android:layout_marginBottom="4dp" />
+
+                                    <TextView
+                                        android:id="@+id/textEndTime"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:text="Select end"
+                                        android:textSize="16sp"
+                                        android:textStyle="bold"
+                                        android:textColor="#F44336"
+                                        android:padding="12dp"
+                                        android:background="@drawable/time_selector_background"
+                                        android:gravity="center" />
+
+                                </LinearLayout>
+
+                            </LinearLayout>
+
+                            <!-- Conflict Warning -->
+                            <TextView
+                                android:id="@+id/textConflictWarning"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="2h"
-                                style="@style/Widget.MaterialComponents.Chip.Choice" />
+                                android:text="⚠️ Time conflict warning"
+                                android:textSize="12sp"
+                                android:textColor="#F44336"
+                                android:padding="8dp"
+                                android:background="#FFEBEE"
+                                android:layout_marginTop="8dp"
+                                android:visibility="gone" />
 
                         </LinearLayout>
 
                     </LinearLayout>
 
                 </com.google.android.material.card.MaterialCardView>
+
+                <!-- Estimated Time (shown when time interval is OFF) -->
+                <LinearLayout
+                    android:id="@+id/durationLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        app:cardElevation="2dp"
+                        app:cardCornerRadius="12dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="16dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="⏱️ Estimated Duration"
+                                android:textSize="14sp"
+                                android:textColor="?android:attr/textColorSecondary"
+                                android:layout_marginBottom="12dp" />
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical">
+
+                                <com.google.android.material.button.MaterialButton
+                                    android:id="@+id/btnDecreaseDuration"
+                                    android:layout_width="48dp"
+                                    android:layout_height="48dp"
+                                    android:text="-"
+                                    android:textSize="20sp"
+                                    app:cornerRadius="24dp"
+                                    style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
+
+                                <TextView
+                                    android:id="@+id/textDuration"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:text="30 minutes"
+                                    android:textSize="18sp"
+                                    android:textStyle="bold"
+                                    android:textColor="?android:attr/textColorPrimary"
+                                    android:gravity="center" />
+
+                                <com.google.android.material.button.MaterialButton
+                                    android:id="@+id/btnIncreaseDuration"
+                                    android:layout_width="48dp"
+                                    android:layout_height="48dp"
+                                    android:text="+"
+                                    android:textSize="20sp"
+                                    app:cornerRadius="24dp"
+                                    style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
+
+                            </LinearLayout>
+
+                            <!-- Quick duration buttons -->
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:layout_marginTop="12dp"
+                                android:gravity="center">
+
+                                <com.google.android.material.chip.Chip
+                                    android:id="@+id/chip15min"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="15m"
+                                    style="@style/Widget.MaterialComponents.Chip.Choice" />
+
+                                <com.google.android.material.chip.Chip
+                                    android:id="@+id/chip30min"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="30m"
+                                    style="@style/Widget.MaterialComponents.Chip.Choice" />
+
+                                <com.google.android.material.chip.Chip
+                                    android:id="@+id/chip1hr"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="1h"
+                                    style="@style/Widget.MaterialComponents.Chip.Choice" />
+
+                                <com.google.android.material.chip.Chip
+                                    android:id="@+id/chip2hr"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="2h"
+                                    style="@style/Widget.MaterialComponents.Chip.Choice" />
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                </LinearLayout>
 
                 <!-- Reminder Toggle -->
                 <com.google.android.material.card.MaterialCardView

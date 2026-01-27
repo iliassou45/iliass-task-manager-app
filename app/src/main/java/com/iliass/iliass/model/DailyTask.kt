@@ -8,9 +8,11 @@ data class DailyTask(
     val description: String = "",
     val category: TaskCategory = TaskCategory.GENERAL,
     val priority: TaskPriority = TaskPriority.MEDIUM,
-    val dueDate: Long, // Timestamp for when task is due
-    val dueTime: Long? = null, // Optional specific time
-    val estimatedMinutes: Int = 30, // Estimated time to complete
+    val dueDate: Long, // Timestamp for the date of the task
+    val startTime: Long? = null, // Start time of the task interval (hour and minute)
+    val endTime: Long? = null, // End time of the task interval (hour and minute)
+    val hasTimeInterval: Boolean = false, // Whether this task has a scheduled time block
+    val estimatedMinutes: Int = 30, // Estimated time to complete (used when no interval)
     val actualMinutes: Int? = null, // Actual time taken (filled on completion)
     val status: TaskStatus = TaskStatus.PENDING,
     val completedAt: Long? = null, // When task was marked complete
@@ -21,13 +23,39 @@ data class DailyTask(
     val notes: String = "",
     val reminderEnabled: Boolean = false,
     val reminderTime: Long? = null // Time to send reminder
-)
+) {
+    // Helper function to check if this task overlaps with another
+    fun overlapsWithTime(otherStart: Long, otherEnd: Long, date: Long): Boolean {
+        if (!hasTimeInterval || startTime == null || endTime == null) return false
+        if (dueDate != date) return false
+
+        val thisStart = startTime
+        val thisEnd = endTime
+
+        // Check for overlap: two intervals overlap if one starts before the other ends
+        return thisStart < otherEnd && otherStart < thisEnd
+    }
+
+    // Get duration in minutes if time interval is set
+    fun getIntervalDurationMinutes(): Int {
+        return if (hasTimeInterval && startTime != null && endTime != null) {
+            ((endTime - startTime) / (1000 * 60)).toInt()
+        } else {
+            estimatedMinutes
+        }
+    }
+}
 
 data class Subtask(
     val id: String = UUID.randomUUID().toString(),
     val title: String,
     val isCompleted: Boolean = false,
     val completedAt: Long? = null
+)
+
+data class TimeConflict(
+    val conflictingTask: DailyTask,
+    val message: String
 )
 
 enum class TaskStatus(val displayName: String, val emoji: String) {

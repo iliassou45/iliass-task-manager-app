@@ -12,7 +12,9 @@ import com.iliass.iliass.model.ClassStudentHistory
 import com.iliass.iliass.model.HistoryAction
 import com.iliass.iliass.model.Note
 import com.iliass.iliass.model.Debt
+import com.iliass.iliass.model.DailyTask
 import com.iliass.iliass.util.NoteManager
+import com.iliass.iliass.util.TaskManager
 
 class StudentDatabase private constructor(context: Context) {
 
@@ -380,6 +382,10 @@ class StudentDatabase private constructor(context: Context) {
         val debtDatabase = DebtDatabase.getInstance(context)
         val debts = debtDatabase.getAllDebts()
 
+        // Get tasks from TaskManager
+        val taskManager = TaskManager.getInstance(context)
+        val tasks = taskManager.getAllTasks()
+
         return StudentDataExport(
             students = students.toList(),
             payments = payments.toList(),
@@ -388,6 +394,7 @@ class StudentDatabase private constructor(context: Context) {
             classHistory = classHistory.toList(),
             notes = notes,
             debts = debts,
+            tasks = tasks,
             exportDate = System.currentTimeMillis()
         )
     }
@@ -478,6 +485,25 @@ class StudentDatabase private constructor(context: Context) {
                 debtDatabase.addDebt(debt)
             }
         }
+
+        // Import tasks
+        val taskManager = TaskManager.getInstance(context)
+        val existingTasks = taskManager.getAllTasks()
+        var tasksAdded = 0
+        data.tasks.forEach { task ->
+            if (mergeMode) {
+                // Only add if not exists
+                if (existingTasks.none { it.id == task.id }) {
+                    taskManager.saveTask(task)
+                    tasksAdded++
+                }
+            } else {
+                // In replace mode, save (will overwrite if exists)
+                taskManager.saveTask(task)
+                tasksAdded++
+            }
+        }
+        android.util.Log.d("StudentDatabase", "Tasks import: ${data.tasks.size} in backup, $tasksAdded added")
     }
 
     // Clear all data
@@ -507,6 +533,7 @@ data class StudentDataExport(
     val classHistory: List<ClassStudentHistory>,
     val notes: List<Note> = emptyList(),
     val debts: List<Debt> = emptyList(),
+    val tasks: List<DailyTask> = emptyList(),
     val exportDate: Long,
-    val version: Int = 2
+    val version: Int = 3
 )

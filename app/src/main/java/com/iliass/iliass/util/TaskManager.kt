@@ -153,9 +153,11 @@ class TaskManager private constructor(private val context: Context) {
         val tomorrow = today + 24 * 60 * 60 * 1000
         return getAllTasks().filter { task ->
             task.dueDate >= today && task.dueDate < tomorrow
-        }.sortedWith(compareBy({ it.status != TaskStatus.PENDING && it.status != TaskStatus.IN_PROGRESS },
-                               { -it.priority.ordinal },
-                               { it.dueTime ?: Long.MAX_VALUE }))
+        }.sortedWith(compareBy(
+            { it.status != TaskStatus.PENDING && it.status != TaskStatus.IN_PROGRESS },
+            { -it.priority.ordinal },
+            { it.startTime ?: Long.MAX_VALUE } // Sort by scheduled start time first
+        ))
     }
 
     fun getUpcomingTasks(days: Int = 7): List<DailyTask> {
@@ -187,6 +189,120 @@ class TaskManager private constructor(private val context: Context) {
         return getAllTasks().filter { task ->
             task.completedAt != null && task.completedAt >= startDate && task.completedAt < endDate
         }
+    }
+
+    // ==================== Time Interval & Conflict Detection ====================
+
+    /**
+     * Check if a proposed time interval conflicts with existing tasks on the same date
+     * @param date The date to check
+     * @param startTime The proposed start time
+     * @param endTime The proposed end time
+     * @param excludeTaskId Optional task ID to exclude (for editing existing tasks)
+     * @return List of conflicting tasks, empty if no conflicts
+     */
+    fun checkTimeConflicts(
+        date: Long,
+        startTime: Long,
+        endTime: Long,
+        excludeTaskId: String? = null
+    ): List<TimeConflict> {
+        val normalizedDate = getStartOfDay(date)
+        val conflicts = mutableListOf<TimeConflict>()
+
+        getAllTasks()
+            .filter { task ->
+                task.id != excludeTaskId &&
+                task.hasTimeInterval &&
+                task.startTime != null &&
+                task.endTime != null &&
+                getStartOfDay(task.dueDate) == normalizedDate &&
+                task.status != TaskStatus.CANCELLED &&
+                task.status != TaskStatus.COMPLETED
+            }
+            .forEach { task ->
+                if (task.overlapsWithTime(startTime, endTime, normalizedDate)) {
+                    val startCal = Calendar.getInstance().apply { timeInMillis = task.startTime!! }
+                    val endCal = Calendar.getInstance().apply { timeInMillis = task.endTime!! }
+                    val timeFormat = java.text.SimpleDateFormat("h:mm a", java.util.Locale.getDefault())
+
+                    conflicts.add(TimeConflict(
+                        conflictingTask = task,
+                        message = "Conflicts with \"${task.title}\" (${timeFormat.format(startCal.time)} - ${timeFormat.format(endCal.time)})"
+                    ))
+                }
+            }
+
+        return conflicts
+    }
+
+    /**
+     * Get all tasks with time intervals for a specific date, sorted by start time
+     */
+    fun getScheduledTasksForDate(date: Long): List<DailyTask> {
+        val normalizedDate = getStartOfDay(date)
+        return getAllTasks()
+            .filter { task ->
+                task.hasTimeInterval &&
+                task.startTime != null &&
+                getStartOfDay(task.dueDate) == normalizedDate &&
+                task.status != TaskStatus.CANCELLED
+            }
+            .sortedBy { it.startTime }
+    }
+
+    /**
+     * Get available time slots for a given date
+     * @param date The date to check
+     * @param durationMinutes Required duration in minutes
+     * @param dayStartHour Start of working hours (default 8 AM)
+     * @param dayEndHour End of working hours (default 22 = 10 PM)
+     * @return List of available (startTime, endTime) pairs
+     */
+    fun getAvailableTimeSlots(
+        date: Long,
+        durationMinutes: Int,
+        dayStartHour: Int = 8,
+        dayEndHour: Int = 22
+    ): List<Pair<Long, Long>> {
+        val normalizedDate = getStartOfDay(date)
+        val scheduledTasks = getScheduledTasksForDate(date)
+
+        val slots = mutableListOf<Pair<Long, Long>>()
+        val calendar = Calendar.getInstance().apply { timeInMillis = normalizedDate }
+
+        // Set day start
+        calendar.set(Calendar.HOUR_OF_DAY, dayStartHour)
+        calendar.set(Calendar.MINUTE, 0)
+        var currentStart = calendar.timeInMillis
+
+        // Set day end
+        calendar.set(Calendar.HOUR_OF_DAY, dayEndHour)
+        val dayEnd = calendar.timeInMillis
+
+        val requiredDuration = durationMinutes * 60 * 1000L
+
+        for (task in scheduledTasks) {
+            val taskStart = task.startTime!!
+            val taskEnd = task.endTime!!
+
+            // Check gap before this task
+            if (taskStart > currentStart && taskStart - currentStart >= requiredDuration) {
+                slots.add(Pair(currentStart, taskStart))
+            }
+
+            // Move current start to after this task
+            if (taskEnd > currentStart) {
+                currentStart = taskEnd
+            }
+        }
+
+        // Check remaining time after last task
+        if (dayEnd > currentStart && dayEnd - currentStart >= requiredDuration) {
+            slots.add(Pair(currentStart, dayEnd))
+        }
+
+        return slots
     }
 
     // ==================== Analytics ====================
