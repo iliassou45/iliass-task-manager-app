@@ -192,6 +192,30 @@
             android:enabled="true"
             android:exported="false" />
 
+        <!-- Task Manager Activities -->
+        <activity
+            android:name=".TaskManagerActivity"
+            android:exported="false"
+            android:label="Task Manager" />
+        <activity
+            android:name=".AddEditTaskActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".TaskAnalyticsActivity"
+            android:exported="false"
+            android:label="Task Analytics" />
+
+        <!-- Task Reminder Receivers -->
+        <receiver
+            android:name=".util.TaskReminderReceiver"
+            android:enabled="true"
+            android:exported="false" />
+        <receiver
+            android:name=".util.TaskActionReceiver"
+            android:enabled="true"
+            android:exported="false" />
+
         <!-- Student Payment Activities -->
         <activity
             android:name=".StudentPaymentActivity"
