@@ -109,9 +109,9 @@ object SupabaseBackupManager {
                     payments = importData.payments.size,
                     classes = importData.classes.size,
                     lessons = importData.lessons.size,
-                    notes = importData.notes.size,
-                    debts = importData.debts.size,
-                    tasks = importData.tasks.size
+                    notes = (importData.notes ?: emptyList()).size,
+                    debts = (importData.debts ?: emptyList()).size,
+                    tasks = (importData.tasks ?: emptyList()).size
                 )
             )
         } catch (e: Exception) {
@@ -147,9 +147,9 @@ object SupabaseBackupManager {
                         payments = importData.payments.size,
                         classes = importData.classes.size,
                         lessons = importData.lessons.size,
-                        notes = importData.notes.size,
-                        debts = importData.debts.size,
-                        tasks = importData.tasks.size
+                        notes = (importData.notes ?: emptyList()).size,
+                        debts = (importData.debts ?: emptyList()).size,
+                        tasks = (importData.tasks ?: emptyList()).size
                     )
                 )
             } else {
@@ -193,17 +193,21 @@ object SupabaseBackupManager {
             val newClassesInCloud = cloudData.classes.filter { it.id !in localClassIds }
             val missingClassesInCloud = localData.classes.filter { it.id !in cloudClassIds }
 
-            // Compare notes
-            val localNoteIds = localData.notes.map { it.id }.toSet()
-            val cloudNoteIds = cloudData.notes.map { it.id }.toSet()
-            val newNotesInCloud = cloudData.notes.filter { it.id !in localNoteIds }
-            val missingNotesInCloud = localData.notes.filter { it.id !in cloudNoteIds }
+            // Compare notes (handle null for old backups)
+            val localNotes = localData.notes ?: emptyList()
+            val cloudNotes = cloudData.notes ?: emptyList()
+            val localNoteIds = localNotes.map { it.id }.toSet()
+            val cloudNoteIds = cloudNotes.map { it.id }.toSet()
+            val newNotesInCloud = cloudNotes.filter { it.id !in localNoteIds }
+            val missingNotesInCloud = localNotes.filter { it.id !in cloudNoteIds }
 
-            // Compare debts
-            val localDebtIds = localData.debts.map { it.id }.toSet()
-            val cloudDebtIds = cloudData.debts.map { it.id }.toSet()
-            val newDebtsInCloud = cloudData.debts.filter { it.id !in localDebtIds }
-            val missingDebtsInCloud = localData.debts.filter { it.id !in cloudDebtIds }
+            // Compare debts (handle null for old backups)
+            val localDebts = localData.debts ?: emptyList()
+            val cloudDebts = cloudData.debts ?: emptyList()
+            val localDebtIds = localDebts.map { it.id }.toSet()
+            val cloudDebtIds = cloudDebts.map { it.id }.toSet()
+            val newDebtsInCloud = cloudDebts.filter { it.id !in localDebtIds }
+            val missingDebtsInCloud = localDebts.filter { it.id !in cloudDebtIds }
 
             // Compare payments
             val localPaymentIds = localData.payments.map { it.id }.toSet()
@@ -217,11 +221,13 @@ object SupabaseBackupManager {
             val newLessonsInCloud = cloudData.lessons.size - localData.lessons.filter { it.id in cloudLessonIds }.size
             val missingLessonsInCloud = localData.lessons.size - cloudData.lessons.filter { it.id in localLessonIds }.size
 
-            // Compare tasks
-            val localTaskIds = localData.tasks.map { it.id }.toSet()
-            val cloudTaskIds = cloudData.tasks.map { it.id }.toSet()
-            val newTasksInCloud = cloudData.tasks.filter { it.id !in localTaskIds }
-            val missingTasksInCloud = localData.tasks.filter { it.id !in cloudTaskIds }
+            // Compare tasks (handle null for old backups without tasks)
+            val localTasks = localData.tasks ?: emptyList()
+            val cloudTasks = cloudData.tasks ?: emptyList()
+            val localTaskIds = localTasks.map { it.id }.toSet()
+            val cloudTaskIds = cloudTasks.map { it.id }.toSet()
+            val newTasksInCloud = cloudTasks.filter { it.id !in localTaskIds }
+            val missingTasksInCloud = localTasks.filter { it.id !in cloudTaskIds }
 
             ComparisonResult.Success(
                 cloudBackupDate = cloudData.exportDate,
@@ -230,18 +236,18 @@ object SupabaseBackupManager {
                     payments = localData.payments.size,
                     classes = localData.classes.size,
                     lessons = localData.lessons.size,
-                    notes = localData.notes.size,
-                    debts = localData.debts.size,
-                    tasks = localData.tasks.size
+                    notes = localNotes.size,
+                    debts = localDebts.size,
+                    tasks = localTasks.size
                 ),
                 cloudCounts = ItemCounts(
                     students = cloudData.students.size,
                     payments = cloudData.payments.size,
                     classes = cloudData.classes.size,
                     lessons = cloudData.lessons.size,
-                    notes = cloudData.notes.size,
-                    debts = cloudData.debts.size,
-                    tasks = cloudData.tasks.size
+                    notes = cloudNotes.size,
+                    debts = cloudDebts.size,
+                    tasks = cloudTasks.size
                 ),
                 differences = DataDifferences(
                     newStudentsInCloud = newStudentsInCloud,
