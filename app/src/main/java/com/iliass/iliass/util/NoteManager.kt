@@ -134,7 +134,7 @@ class NoteManager(private val context: Context) {
 
     private fun getAllNotesFromFile(file: File): List<Note> {
         return try {
-            if (!file.exists()) {
+            if (!file.exists() || !file.canRead()) {
                 return emptyList()
             }
             val json = file.readText()
