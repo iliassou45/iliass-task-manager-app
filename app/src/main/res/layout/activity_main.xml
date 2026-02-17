@@ -4,54 +4,57 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?android:attr/colorBackground"
+    android:background="@color/colorBackground"
     tools:context=".MainActivity">
 
-    <com.google.android.material.card.MaterialCardView
+    <!-- Modern Gradient Header with rounded bottom -->
+    <FrameLayout
         android:id="@+id/headerCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardBackgroundColor="#1976D2"
-        app:cardElevation="4dp"
-        app:cardCornerRadius="0dp"
+        android:background="@drawable/gradient_header_rounded_bg"
         app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="24dp">
+            android:paddingHorizontal="28dp"
+            android:paddingTop="48dp"
+            android:paddingBottom="32dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="🚀 Task Manager"
-                android:textSize="28sp"
+                android:text="Task Manager"
+                android:textSize="32sp"
                 android:textStyle="bold"
-                android:textColor="@android:color/white"/>
+                android:textColor="@android:color/white"
+                android:letterSpacing="0.02" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Automate your daily tasks"
-                android:textSize="14sp"
-                android:textColor="#BBDEFB"
-                android:layout_marginTop="4dp"/>
+                android:textSize="15sp"
+                android:textColor="#CCFFFFFF"
+                android:layout_marginTop="6dp" />
 
         </LinearLayout>
 
-    </com.google.android.material.card.MaterialCardView>
+    </FrameLayout>
 
     <TextView
         android:id="@+id/sectionTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Available Tasks"
-        android:textSize="18sp"
+        android:text="Available Tools"
+        android:textSize="20sp"
         android:textStyle="bold"
-        android:textColor="#424242"
+        android:textColor="@color/textPrimary"
         android:layout_marginStart="24dp"
         android:layout_marginTop="24dp"
+        android:letterSpacing="0.01"
         app:layout_constraintTop_toBottomOf="@id/headerCard"
         app:layout_constraintStart_toStartOf="parent"/>
 
@@ -60,7 +63,8 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:paddingHorizontal="16dp"
-        android:paddingVertical="16dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="16dp"
         android:clipToPadding="false"
         app:layout_constraintTop_toBottomOf="@id/sectionTitle"
         app:layout_constraintBottom_toBottomOf="parent"

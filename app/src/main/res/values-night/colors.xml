@@ -1,50 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Theme-aware colors (Dark Mode values) -->
-    <color name="colorPrimary">#64B5F6</color>
-    <color name="colorPrimaryVariant">#42A5F5</color>
-    <color name="colorSecondary">#81C784</color>
-    <color name="colorBackground">#121212</color>
-    <color name="colorSurface">#1E1E1E</color>
-    <color name="colorCard">#2C2C2C</color>
-    <color name="textPrimary">#E0E0E0</color>
-    <color name="textSecondary">#AAAAAA</color>
-    <color name="textOnPrimary">#000000</color>
+    <!-- Modern Premium Color Palette (Dark Mode) -->
+    <color name="colorPrimary">#A29BFE</color>
+    <color name="colorPrimaryVariant">#6C5CE7</color>
+    <color name="colorSecondary">#55EFC4</color>
+    <color name="colorBackground">#0D1117</color>
+    <color name="colorSurface">#161B22</color>
+    <color name="colorCard">#21262D</color>
+    <color name="textPrimary">#E6EDF3</color>
+    <color name="textSecondary">#8B949E</color>
+    <color name="textOnPrimary">#0D1117</color>
+
+    <!-- Header Gradient Colors -->
+    <color name="gradientStart">#6C5CE7</color>
+    <color name="gradientEnd">#A29BFE</color>
+    <color name="gradientMid">#8B7CF6</color>
 
     <!-- Statistics Card Colors (Dark Mode) -->
-    <color name="statActiveStudentsBg">#1A237E</color>
-    <color name="statActiveStudentsText">#90CAF9</color>
-    <color name="statLostStudentsBg">#4A148C</color>
-    <color name="statLostStudentsText">#CE93D8</color>
-    <color name="statThisMonthBg">#1B5E20</color>
-    <color name="statThisMonthText">#A5D6A7</color>
-    <color name="statThisYearBg">#E65100</color>
-    <color name="statThisYearText">#FFCC80</color>
-    <color name="statDebtBg">#B71C1C</color>
-    <color name="statDebtText">#EF9A9A</color>
+    <color name="statActiveStudentsBg">#1E1B4B</color>
+    <color name="statActiveStudentsText">#A29BFE</color>
+    <color name="statLostStudentsBg">#2E1065</color>
+    <color name="statLostStudentsText">#C4B5FD</color>
+    <color name="statThisMonthBg">#052E16</color>
+    <color name="statThisMonthText">#6EE7B7</color>
+    <color name="statThisYearBg">#431407</color>
+    <color name="statThisYearText">#FDBA74</color>
+    <color name="statDebtBg">#450A0A</color>
+    <color name="statDebtText">#FCA5A5</color>
 
     <!-- Search Bar -->
-    <color name="searchBarBg">#2C2C2C</color>
-    <color name="searchHint">#757575</color>
+    <color name="searchBarBg">#21262D</color>
+    <color name="searchHint">#6B7280</color>
 
     <!-- Toolbar -->
-    <color name="toolbarBg">#1E1E1E</color>
-    <color name="toolbarText">#FFFFFF</color>
+    <color name="toolbarBg">#161B22</color>
+    <color name="toolbarText">#E6EDF3</color>
 
     <!-- Divider -->
-    <color name="divider">#424242</color>
+    <color name="divider">#30363D</color>
 
     <!-- Link/Accent Colors -->
-    <color name="linkColor">#64B5F6</color>
+    <color name="linkColor">#A29BFE</color>
 
     <!-- Status Colors -->
-    <color name="statusActiveBg">#1B5E20</color>
-    <color name="statusActiveText">#A5D6A7</color>
-    <color name="statusInactiveBg">#B71C1C</color>
-    <color name="statusInactiveText">#EF9A9A</color>
+    <color name="statusActiveBg">#052E16</color>
+    <color name="statusActiveText">#6EE7B7</color>
+    <color name="statusInactiveBg">#450A0A</color>
+    <color name="statusInactiveText">#FCA5A5</color>
+
+    <!-- Modern Accent Palette (Dark) -->
+    <color name="accentPurple">#A29BFE</color>
+    <color name="accentPurpleLight">#C4B5FD</color>
+    <color name="accentTeal">#55EFC4</color>
+    <color name="accentTealLight">#81ECEC</color>
+    <color name="accentPink">#FD79A8</color>
+    <color name="accentOrange">#FB923C</color>
+    <color name="accentBlue">#38BDF8</color>
+    <color name="accentGreen">#34D399</color>
+    <color name="accentYellow">#FCD34D</color>
+    <color name="accentRed">#F87171</color>
+
+    <!-- Card Tint Colors (Dark) -->
+    <color name="cardTintPurple">#1E1B4B</color>
+    <color name="cardTintTeal">#042F2E</color>
+    <color name="cardTintPink">#500724</color>
+    <color name="cardTintOrange">#431407</color>
+    <color name="cardTintBlue">#0C4A6E</color>
+
+    <!-- Tip Card -->
+    <color name="tipCardBg">#1E1B4B</color>
+    <color name="tipCardText">#C4B5FD</color>
+    <color name="tipCardTextSecondary">#A78BFA</color>
 
     <!-- Common Colors - same in both modes -->
-    <color name="error">#EF5350</color>
-    <color name="success">#66BB6A</color>
-    <color name="warning">#FFA726</color>
+    <color name="error">#F87171</color>
+    <color name="success">#34D399</color>
+    <color name="warning">#FBBF24</color>
 </resources>

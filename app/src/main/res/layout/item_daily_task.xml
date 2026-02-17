@@ -4,11 +4,13 @@
     android:id="@+id/taskCard"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginHorizontal="4dp"
+    android:layout_marginHorizontal="8dp"
     android:layout_marginVertical="6dp"
-    app:cardElevation="2dp"
-    app:cardCornerRadius="12dp"
-    app:cardBackgroundColor="?android:attr/colorBackground">
+    app:cardElevation="1dp"
+    app:cardCornerRadius="20dp"
+    app:strokeWidth="1dp"
+    app:strokeColor="@color/divider"
+    app:cardBackgroundColor="@color/colorSurface">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -18,18 +20,19 @@
         <!-- Priority Indicator -->
         <View
             android:id="@+id/priorityIndicator"
-            android:layout_width="6dp"
+            android:layout_width="5dp"
             android:layout_height="match_parent"
-            android:background="#FFC107" />
+            android:background="@drawable/priority_indicator_bg" />
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:orientation="vertical"
-            android:padding="12dp">
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="14dp">
 
-            <!-- Top Row: Checkbox + Title + Status -->
+            <!-- Top Row: Checkbox + Title -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -40,7 +43,7 @@
                     android:id="@+id/checkboxComplete"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:buttonTint="#6200EE" />
+                    android:buttonTint="@color/accentPurple" />
 
                 <TextView
                     android:id="@+id/textTitle"
@@ -48,11 +51,12 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Task Title"
-                    android:textSize="16sp"
+                    android:textSize="15sp"
                     android:textStyle="bold"
-                    android:textColor="?android:attr/textColorPrimary"
+                    android:textColor="@color/textPrimary"
                     android:maxLines="2"
-                    android:ellipsize="end" />
+                    android:ellipsize="end"
+                    android:letterSpacing="0.01" />
 
             </LinearLayout>
 
@@ -62,8 +66,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Task description goes here"
-                android:textSize="14sp"
-                android:textColor="?android:attr/textColorSecondary"
+                android:textSize="13sp"
+                android:textColor="@color/textSecondary"
                 android:maxLines="2"
                 android:ellipsize="end"
                 android:layout_marginStart="36dp"
@@ -76,18 +80,18 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:layout_marginStart="36dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="10dp"
                 android:gravity="center_vertical">
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/chipCategory"
                     android:layout_width="wrap_content"
-                    android:layout_height="32dp"
+                    android:layout_height="28dp"
                     android:text="📋 General"
                     android:textSize="11sp"
                     android:textColor="@android:color/white"
                     app:chipMinHeight="28dp"
-                    app:chipCornerRadius="8dp"
+                    app:chipCornerRadius="10dp"
                     app:chipBackgroundColor="#607D8B" />
 
                 <TextView
@@ -96,8 +100,8 @@
                     android:layout_height="wrap_content"
                     android:text="📅 Today at 3:00 PM"
                     android:textSize="12sp"
-                    android:textColor="#757575"
-                    android:layout_marginStart="8dp" />
+                    android:textColor="@color/textSecondary"
+                    android:layout_marginStart="10dp" />
 
             </LinearLayout>
 
@@ -107,7 +111,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:layout_marginStart="36dp"
-                android:layout_marginTop="6dp"
+                android:layout_marginTop="8dp"
                 android:gravity="center_vertical">
 
                 <LinearLayout
@@ -124,7 +128,7 @@
                         android:layout_height="wrap_content"
                         android:text="📝 2/5 subtasks"
                         android:textSize="11sp"
-                        android:textColor="#9E9E9E" />
+                        android:textColor="@color/textSecondary" />
 
                 </LinearLayout>
 
@@ -134,7 +138,7 @@
                     android:layout_height="wrap_content"
                     android:text="⏱️ 30min"
                     android:textSize="11sp"
-                    android:textColor="#9E9E9E"
+                    android:textColor="@color/textSecondary"
                     android:layout_marginStart="12dp"
                     android:visibility="gone" />
 
@@ -149,7 +153,7 @@
                     android:layout_height="wrap_content"
                     android:text="⏳ Pending"
                     android:textSize="11sp"
-                    android:textColor="#757575" />
+                    android:textColor="@color/textSecondary" />
 
             </LinearLayout>
 
@@ -161,7 +165,9 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:gravity="center"
-            android:padding="8dp">
+            android:paddingVertical="12dp"
+            android:paddingEnd="12dp"
+            android:paddingStart="0dp">
 
             <ImageButton
                 android:id="@+id/btnEdit"
@@ -169,7 +175,7 @@
                 android:layout_height="36dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:src="@android:drawable/ic_menu_edit"
-                android:tint="#757575"
+                android:tint="@color/accentPurple"
                 android:contentDescription="Edit" />
 
             <ImageButton
@@ -178,8 +184,9 @@
                 android:layout_height="36dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:src="@android:drawable/ic_menu_delete"
-                android:tint="#F44336"
-                android:contentDescription="Delete" />
+                android:tint="@color/accentRed"
+                android:contentDescription="Delete"
+                android:layout_marginTop="4dp" />
 
         </LinearLayout>
 

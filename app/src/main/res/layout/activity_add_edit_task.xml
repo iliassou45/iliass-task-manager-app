@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?android:attr/colorBackground">
+    android:background="@color/colorBackground">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -15,25 +15,25 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <!-- Header Card -->
-            <com.google.android.material.card.MaterialCardView
+            <!-- Modern Gradient Header -->
+            <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardElevation="4dp"
-                app:cardCornerRadius="0dp"
-                app:cardBackgroundColor="#6200EE">
+                android:background="@drawable/gradient_header_rounded_bg">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:padding="16dp"
+                    android:paddingHorizontal="20dp"
+                    android:paddingTop="16dp"
+                    android:paddingBottom="24dp"
                     android:gravity="center_vertical">
 
                     <ImageButton
                         android:id="@+id/backButton"
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
                         android:background="?attr/selectableItemBackgroundBorderless"
                         android:src="@android:drawable/ic_menu_revert"
                         android:tint="@android:color/white"
@@ -44,36 +44,41 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="➕ New Task"
+                        android:text="New Task"
                         android:textColor="@android:color/white"
-                        android:textSize="24sp"
+                        android:textSize="22sp"
                         android:textStyle="bold"
-                        android:layout_marginStart="8dp" />
+                        android:layout_marginStart="8dp"
+                        android:letterSpacing="0.02" />
 
                 </LinearLayout>
 
-            </com.google.android.material.card.MaterialCardView>
+            </FrameLayout>
 
             <!-- Form Content -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="16dp">
+                android:paddingHorizontal="16dp"
+                android:paddingTop="20dp">
 
                 <!-- Title Input -->
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    app:cardElevation="2dp"
-                    app:cardCornerRadius="12dp">
+                    android:layout_marginBottom="14dp"
+                    app:cardElevation="0dp"
+                    app:cardCornerRadius="16dp"
+                    app:strokeWidth="1dp"
+                    app:strokeColor="@color/divider">
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="Task Title *"
-                        app:boxBackgroundMode="none">
+                        app:boxBackgroundMode="none"
+                        app:hintTextColor="@color/accentPurple">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/editTitle"
@@ -91,15 +96,18 @@
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    app:cardElevation="2dp"
-                    app:cardCornerRadius="12dp">
+                    android:layout_marginBottom="14dp"
+                    app:cardElevation="0dp"
+                    app:cardCornerRadius="16dp"
+                    app:strokeWidth="1dp"
+                    app:strokeColor="@color/divider">
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="Description (Optional)"
-                        app:boxBackgroundMode="none">
+                        app:boxBackgroundMode="none"
+                        app:hintTextColor="@color/accentPurple">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/editDescription"
@@ -119,9 +127,11 @@
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    app:cardElevation="2dp"
-                    app:cardCornerRadius="12dp">
+                    android:layout_marginBottom="14dp"
+                    app:cardElevation="0dp"
+                    app:cardCornerRadius="16dp"
+                    app:strokeWidth="1dp"
+                    app:strokeColor="@color/divider">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -132,9 +142,10 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="🎯 Priority"
+                            android:text="Priority"
                             android:textSize="14sp"
-                            android:textColor="?android:attr/textColorSecondary"
+                            android:textColor="@color/accentPurple"
+                            android:textStyle="bold"
                             android:layout_marginBottom="12dp" />
 
                         <RadioGroup
@@ -186,9 +197,11 @@
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    app:cardElevation="2dp"
-                    app:cardCornerRadius="12dp">
+                    android:layout_marginBottom="14dp"
+                    app:cardElevation="0dp"
+                    app:cardCornerRadius="16dp"
+                    app:strokeWidth="1dp"
+                    app:strokeColor="@color/divider">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -199,9 +212,10 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="📁 Category"
+                            android:text="Category"
                             android:textSize="14sp"
-                            android:textColor="?android:attr/textColorSecondary"
+                            android:textColor="@color/accentPurple"
+                            android:textStyle="bold"
                             android:layout_marginBottom="12dp" />
 
                         <Spinner
@@ -219,9 +233,11 @@
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    app:cardElevation="2dp"
-                    app:cardCornerRadius="12dp">
+                    android:layout_marginBottom="14dp"
+                    app:cardElevation="0dp"
+                    app:cardCornerRadius="16dp"
+                    app:strokeWidth="1dp"
+                    app:strokeColor="@color/divider">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -232,9 +248,10 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="📅 Date *"
+                            android:text="Due Date *"
                             android:textSize="14sp"
-                            android:textColor="?android:attr/textColorSecondary"
+                            android:textColor="@color/accentPurple"
+                            android:textStyle="bold"
                             android:layout_marginBottom="8dp" />
 
                         <TextView
@@ -243,7 +260,7 @@
                             android:layout_height="wrap_content"
                             android:text="Select Date"
                             android:textSize="16sp"
-                            android:textColor="?android:attr/textColorPrimary"
+                            android:textColor="@color/textPrimary"
                             android:padding="12dp"
                             android:background="?attr/selectableItemBackground"
                             android:drawableEnd="@android:drawable/ic_menu_my_calendar" />
@@ -256,9 +273,11 @@
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    app:cardElevation="2dp"
-                    app:cardCornerRadius="12dp">
+                    android:layout_marginBottom="14dp"
+                    app:cardElevation="0dp"
+                    app:cardCornerRadius="16dp"
+                    app:strokeWidth="1dp"
+                    app:strokeColor="@color/divider">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -281,16 +300,18 @@
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="⏰ Schedule Time Block"
+                                    android:text="Schedule Time Block"
                                     android:textSize="16sp"
-                                    android:textColor="?android:attr/textColorPrimary" />
+                                    android:textStyle="bold"
+                                    android:textColor="@color/textPrimary" />
 
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="Set start and end time for this task"
                                     android:textSize="12sp"
-                                    android:textColor="?android:attr/textColorSecondary" />
+                                    android:textColor="@color/textSecondary"
+                                    android:layout_marginTop="2dp" />
 
                             </LinearLayout>
 
@@ -301,7 +322,7 @@
 
                         </LinearLayout>
 
-                        <!-- Time Interval Layout (shown when switch is on) -->
+                        <!-- Time Interval Layout -->
                         <LinearLayout
                             android:id="@+id/timeIntervalLayout"
                             android:layout_width="match_parent"
@@ -315,7 +336,6 @@
                                 android:layout_height="wrap_content"
                                 android:orientation="horizontal">
 
-                                <!-- Start Time -->
                                 <LinearLayout
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
@@ -328,7 +348,7 @@
                                         android:layout_height="wrap_content"
                                         android:text="Start Time"
                                         android:textSize="12sp"
-                                        android:textColor="?android:attr/textColorSecondary"
+                                        android:textColor="@color/textSecondary"
                                         android:layout_marginBottom="4dp" />
 
                                     <TextView
@@ -338,7 +358,7 @@
                                         android:text="Select start"
                                         android:textSize="16sp"
                                         android:textStyle="bold"
-                                        android:textColor="#4CAF50"
+                                        android:textColor="@color/accentGreen"
                                         android:padding="12dp"
                                         android:background="@drawable/time_selector_background"
                                         android:gravity="center" />
@@ -350,10 +370,9 @@
                                     android:layout_height="wrap_content"
                                     android:text="→"
                                     android:textSize="20sp"
-                                    android:textColor="?android:attr/textColorSecondary"
+                                    android:textColor="@color/textSecondary"
                                     android:layout_gravity="center" />
 
-                                <!-- End Time -->
                                 <LinearLayout
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
@@ -366,7 +385,7 @@
                                         android:layout_height="wrap_content"
                                         android:text="End Time"
                                         android:textSize="12sp"
-                                        android:textColor="?android:attr/textColorSecondary"
+                                        android:textColor="@color/textSecondary"
                                         android:layout_marginBottom="4dp" />
 
                                     <TextView
@@ -376,7 +395,7 @@
                                         android:text="Select end"
                                         android:textSize="16sp"
                                         android:textStyle="bold"
-                                        android:textColor="#F44336"
+                                        android:textColor="@color/accentRed"
                                         android:padding="12dp"
                                         android:background="@drawable/time_selector_background"
                                         android:gravity="center" />
@@ -385,16 +404,15 @@
 
                             </LinearLayout>
 
-                            <!-- Conflict Warning -->
                             <TextView
                                 android:id="@+id/textConflictWarning"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:text="⚠️ Time conflict warning"
                                 android:textSize="12sp"
-                                android:textColor="#F44336"
-                                android:padding="8dp"
-                                android:background="#FFEBEE"
+                                android:textColor="@color/accentRed"
+                                android:padding="10dp"
+                                android:background="@color/statDebtBg"
                                 android:layout_marginTop="8dp"
                                 android:visibility="gone" />
 
@@ -404,7 +422,7 @@
 
                 </com.google.android.material.card.MaterialCardView>
 
-                <!-- Estimated Time (shown when time interval is OFF) -->
+                <!-- Estimated Duration -->
                 <LinearLayout
                     android:id="@+id/durationLayout"
                     android:layout_width="match_parent"
@@ -414,9 +432,11 @@
                     <com.google.android.material.card.MaterialCardView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="16dp"
-                        app:cardElevation="2dp"
-                        app:cardCornerRadius="12dp">
+                        android:layout_marginBottom="14dp"
+                        app:cardElevation="0dp"
+                        app:cardCornerRadius="16dp"
+                        app:strokeWidth="1dp"
+                        app:strokeColor="@color/divider">
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -427,9 +447,10 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="⏱️ Estimated Duration"
+                                android:text="Estimated Duration"
                                 android:textSize="14sp"
-                                android:textColor="?android:attr/textColorSecondary"
+                                android:textColor="@color/accentPurple"
+                                android:textStyle="bold"
                                 android:layout_marginBottom="12dp" />
 
                             <LinearLayout
@@ -455,7 +476,7 @@
                                     android:text="30 minutes"
                                     android:textSize="18sp"
                                     android:textStyle="bold"
-                                    android:textColor="?android:attr/textColorPrimary"
+                                    android:textColor="@color/textPrimary"
                                     android:gravity="center" />
 
                                 <com.google.android.material.button.MaterialButton
@@ -469,7 +490,6 @@
 
                             </LinearLayout>
 
-                            <!-- Quick duration buttons -->
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
@@ -517,9 +537,11 @@
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    app:cardElevation="2dp"
-                    app:cardCornerRadius="12dp">
+                    android:layout_marginBottom="14dp"
+                    app:cardElevation="0dp"
+                    app:cardCornerRadius="16dp"
+                    app:strokeWidth="1dp"
+                    app:strokeColor="@color/divider">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -537,9 +559,10 @@
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:text="🔔 Set Reminder"
+                                android:text="Set Reminder"
                                 android:textSize="16sp"
-                                android:textColor="?android:attr/textColorPrimary" />
+                                android:textStyle="bold"
+                                android:textColor="@color/textPrimary" />
 
                             <androidx.appcompat.widget.SwitchCompat
                                 android:id="@+id/switchReminder"
@@ -561,7 +584,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="Reminder Time"
                                 android:textSize="14sp"
-                                android:textColor="?android:attr/textColorSecondary"
+                                android:textColor="@color/textSecondary"
                                 android:layout_marginBottom="8dp" />
 
                             <TextView
@@ -570,7 +593,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="Select reminder time"
                                 android:textSize="16sp"
-                                android:textColor="?android:attr/textColorPrimary"
+                                android:textColor="@color/textPrimary"
                                 android:padding="12dp"
                                 android:background="?attr/selectableItemBackground" />
 
@@ -584,15 +607,18 @@
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    app:cardElevation="2dp"
-                    app:cardCornerRadius="12dp">
+                    android:layout_marginBottom="14dp"
+                    app:cardElevation="0dp"
+                    app:cardCornerRadius="16dp"
+                    app:strokeWidth="1dp"
+                    app:strokeColor="@color/divider">
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="📝 Notes (Optional)"
-                        app:boxBackgroundMode="none">
+                        android:hint="Notes (Optional)"
+                        app:boxBackgroundMode="none"
+                        app:hintTextColor="@color/accentPurple">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/editNotes"
@@ -616,8 +642,9 @@
                     android:text="Save Task"
                     android:textSize="16sp"
                     android:textStyle="bold"
-                    app:cornerRadius="12dp"
-                    app:backgroundTint="#6200EE"
+                    android:textColor="@android:color/white"
+                    app:cornerRadius="16dp"
+                    app:backgroundTint="@color/accentPurple"
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="24dp" />
 
