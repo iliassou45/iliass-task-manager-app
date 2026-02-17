@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?android:attr/colorBackground">
+    android:background="@color/colorBackground">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -15,25 +15,25 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <!-- Header Card -->
-            <com.google.android.material.card.MaterialCardView
+            <!-- Modern Gradient Header -->
+            <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardElevation="4dp"
-                app:cardCornerRadius="0dp"
-                app:cardBackgroundColor="#6200EE">
+                android:background="@drawable/gradient_header_rounded_bg">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:padding="16dp"
+                    android:paddingHorizontal="20dp"
+                    android:paddingTop="16dp"
+                    android:paddingBottom="24dp"
                     android:gravity="center_vertical">
 
                     <ImageButton
                         android:id="@+id/backButton"
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
                         android:background="?attr/selectableItemBackgroundBorderless"
                         android:src="@android:drawable/ic_menu_revert"
                         android:tint="@android:color/white"
@@ -43,69 +43,83 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="📊 Analytics"
+                        android:text="Analytics"
                         android:textColor="@android:color/white"
-                        android:textSize="24sp"
+                        android:textSize="22sp"
                         android:textStyle="bold"
-                        android:layout_marginStart="8dp" />
+                        android:layout_marginStart="8dp"
+                        android:letterSpacing="0.02" />
 
                 </LinearLayout>
 
-            </com.google.android.material.card.MaterialCardView>
+            </FrameLayout>
 
             <!-- Productivity Score Card -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="12dp"
-                app:cardElevation="4dp"
-                app:cardCornerRadius="16dp"
-                app:cardBackgroundColor="#E8F5E9">
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="12dp"
+                app:cardElevation="0dp"
+                app:cardCornerRadius="24dp">
 
-                <LinearLayout
+                <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="20dp"
-                    android:gravity="center">
+                    android:layout_height="wrap_content">
 
-                    <TextView
-                        android:layout_width="wrap_content"
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/productivity_score_bg" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Productivity Score"
-                        android:textSize="16sp"
-                        android:textColor="#2E7D32" />
+                        android:orientation="vertical"
+                        android:padding="24dp"
+                        android:gravity="center">
 
-                    <TextView
-                        android:id="@+id/textProductivityScore"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="75"
-                        android:textSize="64sp"
-                        android:textStyle="bold"
-                        android:textColor="#1B5E20"
-                        android:layout_marginTop="8dp" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Productivity Score"
+                            android:textSize="15sp"
+                            android:textColor="#CCFFFFFF"
+                            android:letterSpacing="0.05" />
 
-                    <TextView
-                        android:id="@+id/textScoreLabel"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Good! Keep it up! 👍"
-                        android:textSize="14sp"
-                        android:textColor="#43A047"
-                        android:layout_marginTop="4dp" />
+                        <TextView
+                            android:id="@+id/textProductivityScore"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="75"
+                            android:textSize="72sp"
+                            android:textStyle="bold"
+                            android:textColor="@android:color/white"
+                            android:layout_marginTop="4dp" />
 
-                </LinearLayout>
+                        <TextView
+                            android:id="@+id/textScoreLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Good! Keep it up!"
+                            android:textSize="14sp"
+                            android:textColor="#DDFFFFFF"
+                            android:layout_marginTop="4dp" />
+
+                    </LinearLayout>
+
+                </FrameLayout>
 
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Stats Grid -->
+            <!-- Stats Grid Row 1 -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginHorizontal="12dp"
-                android:layout_marginBottom="8dp">
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginBottom="10dp">
 
                 <!-- Completion Rate -->
                 <com.google.android.material.card.MaterialCardView
@@ -113,8 +127,10 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:layout_marginEnd="6dp"
-                    app:cardElevation="2dp"
-                    app:cardCornerRadius="12dp">
+                    app:cardElevation="0dp"
+                    app:cardCornerRadius="20dp"
+                    app:strokeWidth="1dp"
+                    app:strokeColor="@color/divider">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -127,23 +143,25 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="✅"
-                            android:textSize="24sp" />
+                            android:textSize="28sp" />
 
                         <TextView
                             android:id="@+id/textCompletionRate"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="85%"
-                            android:textSize="24sp"
+                            android:textSize="26sp"
                             android:textStyle="bold"
-                            android:textColor="#4CAF50" />
+                            android:textColor="@color/accentGreen"
+                            android:layout_marginTop="4dp" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Completion Rate"
                             android:textSize="11sp"
-                            android:textColor="?android:attr/textColorSecondary" />
+                            android:textColor="@color/textSecondary"
+                            android:layout_marginTop="2dp" />
 
                     </LinearLayout>
 
@@ -155,8 +173,10 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:layout_marginStart="6dp"
-                    app:cardElevation="2dp"
-                    app:cardCornerRadius="12dp">
+                    app:cardElevation="0dp"
+                    app:cardCornerRadius="20dp"
+                    app:strokeWidth="1dp"
+                    app:strokeColor="@color/divider">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -169,23 +189,25 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="⏰"
-                            android:textSize="24sp" />
+                            android:textSize="28sp" />
 
                         <TextView
                             android:id="@+id/textOnTimeRate"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="72%"
-                            android:textSize="24sp"
+                            android:textSize="26sp"
                             android:textStyle="bold"
-                            android:textColor="#2196F3" />
+                            android:textColor="@color/accentBlue"
+                            android:layout_marginTop="4dp" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="On-Time Rate"
                             android:textSize="11sp"
-                            android:textColor="?android:attr/textColorSecondary" />
+                            android:textColor="@color/textSecondary"
+                            android:layout_marginTop="2dp" />
 
                     </LinearLayout>
 
@@ -193,13 +215,13 @@
 
             </LinearLayout>
 
-            <!-- Streak and Average -->
+            <!-- Stats Grid Row 2 -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginHorizontal="12dp"
-                android:layout_marginBottom="8dp">
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginBottom="12dp">
 
                 <!-- Current Streak -->
                 <com.google.android.material.card.MaterialCardView
@@ -207,8 +229,10 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:layout_marginEnd="6dp"
-                    app:cardElevation="2dp"
-                    app:cardCornerRadius="12dp">
+                    app:cardElevation="0dp"
+                    app:cardCornerRadius="20dp"
+                    app:strokeWidth="1dp"
+                    app:strokeColor="@color/divider">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -221,23 +245,25 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="🔥"
-                            android:textSize="24sp" />
+                            android:textSize="28sp" />
 
                         <TextView
                             android:id="@+id/textCurrentStreak"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="7 days"
-                            android:textSize="24sp"
+                            android:textSize="26sp"
                             android:textStyle="bold"
-                            android:textColor="#FF9800" />
+                            android:textColor="@color/accentOrange"
+                            android:layout_marginTop="4dp" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Current Streak"
                             android:textSize="11sp"
-                            android:textColor="?android:attr/textColorSecondary" />
+                            android:textColor="@color/textSecondary"
+                            android:layout_marginTop="2dp" />
 
                         <TextView
                             android:id="@+id/textLongestStreak"
@@ -245,7 +271,7 @@
                             android:layout_height="wrap_content"
                             android:text="Best: 14 days"
                             android:textSize="10sp"
-                            android:textColor="#9E9E9E"
+                            android:textColor="@color/textSecondary"
                             android:layout_marginTop="4dp" />
 
                     </LinearLayout>
@@ -258,8 +284,10 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:layout_marginStart="6dp"
-                    app:cardElevation="2dp"
-                    app:cardCornerRadius="12dp">
+                    app:cardElevation="0dp"
+                    app:cardCornerRadius="20dp"
+                    app:strokeWidth="1dp"
+                    app:strokeColor="@color/divider">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -272,23 +300,25 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="📈"
-                            android:textSize="24sp" />
+                            android:textSize="28sp" />
 
                         <TextView
                             android:id="@+id/textAvgTasksPerDay"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="3.2"
-                            android:textSize="24sp"
+                            android:textSize="26sp"
                             android:textStyle="bold"
-                            android:textColor="#9C27B0" />
+                            android:textColor="@color/accentPurple"
+                            android:layout_marginTop="4dp" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Avg Tasks/Day"
                             android:textSize="11sp"
-                            android:textColor="?android:attr/textColorSecondary" />
+                            android:textColor="@color/textSecondary"
+                            android:layout_marginTop="2dp" />
 
                     </LinearLayout>
 
@@ -300,37 +330,40 @@
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="12dp"
-                app:cardElevation="2dp"
-                app:cardCornerRadius="12dp">
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginBottom="12dp"
+                app:cardElevation="0dp"
+                app:cardCornerRadius="20dp"
+                app:strokeWidth="1dp"
+                app:strokeColor="@color/divider">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="16dp">
+                    android:padding="20dp">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="📊 Task Overview"
-                        android:textSize="16sp"
+                        android:text="Task Overview"
+                        android:textSize="17sp"
                         android:textStyle="bold"
-                        android:textColor="?android:attr/textColorPrimary"
-                        android:layout_marginBottom="12dp" />
+                        android:textColor="@color/textPrimary"
+                        android:layout_marginBottom="16dp" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:layout_marginBottom="8dp">
+                        android:layout_marginBottom="12dp">
 
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="Total Created"
-                            android:textColor="?android:attr/textColorSecondary" />
+                            android:textColor="@color/textSecondary" />
 
                         <TextView
                             android:id="@+id/textTotalCreated"
@@ -338,7 +371,7 @@
                             android:layout_height="wrap_content"
                             android:text="45"
                             android:textStyle="bold"
-                            android:textColor="?android:attr/textColorPrimary" />
+                            android:textColor="@color/textPrimary" />
 
                     </LinearLayout>
 
@@ -346,14 +379,14 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:layout_marginBottom="8dp">
+                        android:layout_marginBottom="12dp">
 
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="✅ Completed"
-                            android:textColor="#4CAF50" />
+                            android:text="Completed"
+                            android:textColor="@color/accentGreen" />
 
                         <TextView
                             android:id="@+id/textTotalCompleted"
@@ -361,7 +394,7 @@
                             android:layout_height="wrap_content"
                             android:text="38"
                             android:textStyle="bold"
-                            android:textColor="#4CAF50" />
+                            android:textColor="@color/accentGreen" />
 
                     </LinearLayout>
 
@@ -369,14 +402,14 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:layout_marginBottom="8dp">
+                        android:layout_marginBottom="12dp">
 
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="⚠️ Overdue"
-                            android:textColor="#F44336" />
+                            android:text="Overdue"
+                            android:textColor="@color/accentRed" />
 
                         <TextView
                             android:id="@+id/textTotalOverdue"
@@ -384,7 +417,7 @@
                             android:layout_height="wrap_content"
                             android:text="3"
                             android:textStyle="bold"
-                            android:textColor="#F44336" />
+                            android:textColor="@color/accentRed" />
 
                     </LinearLayout>
 
@@ -397,8 +430,8 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="❌ Cancelled"
-                            android:textColor="#9E9E9E" />
+                            android:text="Cancelled"
+                            android:textColor="@color/textSecondary" />
 
                         <TextView
                             android:id="@+id/textTotalCancelled"
@@ -406,7 +439,7 @@
                             android:layout_height="wrap_content"
                             android:text="4"
                             android:textStyle="bold"
-                            android:textColor="#9E9E9E" />
+                            android:textColor="@color/textSecondary" />
 
                     </LinearLayout>
 
@@ -414,42 +447,44 @@
 
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Best Times -->
+            <!-- Peak Performance -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="12dp"
+                android:layout_marginHorizontal="16dp"
                 android:layout_marginBottom="12dp"
-                app:cardElevation="2dp"
-                app:cardCornerRadius="12dp">
+                app:cardElevation="0dp"
+                app:cardCornerRadius="20dp"
+                app:strokeWidth="1dp"
+                app:strokeColor="@color/divider">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="16dp">
+                    android:padding="20dp">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="⚡ Peak Performance"
-                        android:textSize="16sp"
+                        android:text="Peak Performance"
+                        android:textSize="17sp"
                         android:textStyle="bold"
-                        android:textColor="?android:attr/textColorPrimary"
-                        android:layout_marginBottom="12dp" />
+                        android:textColor="@color/textPrimary"
+                        android:layout_marginBottom="16dp" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:layout_marginBottom="8dp">
+                        android:layout_marginBottom="12dp">
 
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="🕐 Most Productive Hour"
-                            android:textColor="?android:attr/textColorSecondary" />
+                            android:text="Most Productive Hour"
+                            android:textColor="@color/textSecondary" />
 
                         <TextView
                             android:id="@+id/textBestHour"
@@ -457,7 +492,7 @@
                             android:layout_height="wrap_content"
                             android:text="10 AM"
                             android:textStyle="bold"
-                            android:textColor="?android:attr/textColorPrimary" />
+                            android:textColor="@color/accentPurple" />
 
                     </LinearLayout>
 
@@ -465,14 +500,14 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:layout_marginBottom="8dp">
+                        android:layout_marginBottom="12dp">
 
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="📅 Most Productive Day"
-                            android:textColor="?android:attr/textColorSecondary" />
+                            android:text="Most Productive Day"
+                            android:textColor="@color/textSecondary" />
 
                         <TextView
                             android:id="@+id/textBestDay"
@@ -480,7 +515,7 @@
                             android:layout_height="wrap_content"
                             android:text="Tuesday"
                             android:textStyle="bold"
-                            android:textColor="?android:attr/textColorPrimary" />
+                            android:textColor="@color/accentPurple" />
 
                     </LinearLayout>
 
@@ -493,8 +528,8 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="🎯 Estimation Accuracy"
-                            android:textColor="?android:attr/textColorSecondary" />
+                            android:text="Estimation Accuracy"
+                            android:textColor="@color/textSecondary" />
 
                         <TextView
                             android:id="@+id/textEstimationAccuracy"
@@ -502,7 +537,7 @@
                             android:layout_height="wrap_content"
                             android:text="78%"
                             android:textStyle="bold"
-                            android:textColor="?android:attr/textColorPrimary" />
+                            android:textColor="@color/accentPurple" />
 
                     </LinearLayout>
 
@@ -514,24 +549,26 @@
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="12dp"
+                android:layout_marginHorizontal="16dp"
                 android:layout_marginBottom="12dp"
-                app:cardElevation="2dp"
-                app:cardCornerRadius="12dp">
+                app:cardElevation="0dp"
+                app:cardCornerRadius="20dp"
+                app:strokeWidth="1dp"
+                app:strokeColor="@color/divider">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="16dp">
+                    android:padding="20dp">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="📆 Weekly Activity"
-                        android:textSize="16sp"
+                        android:text="Weekly Activity"
+                        android:textSize="17sp"
                         android:textStyle="bold"
-                        android:textColor="?android:attr/textColorPrimary"
+                        android:textColor="@color/textPrimary"
                         android:layout_marginBottom="16dp" />
 
                     <LinearLayout
@@ -539,49 +576,43 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:gravity="center">
-
-                        <!-- Day columns will be added dynamically -->
-
-                    </LinearLayout>
+                        android:gravity="center" />
 
                 </LinearLayout>
 
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Productivity Tips -->
+            <!-- Improvement Tips -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="12dp"
-                android:layout_marginBottom="24dp"
-                app:cardElevation="2dp"
-                app:cardCornerRadius="12dp">
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginBottom="28dp"
+                app:cardElevation="0dp"
+                app:cardCornerRadius="20dp"
+                app:strokeWidth="1dp"
+                app:strokeColor="@color/divider">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="16dp">
+                    android:padding="20dp">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="💡 Improvement Tips"
-                        android:textSize="16sp"
+                        android:text="Improvement Tips"
+                        android:textSize="17sp"
                         android:textStyle="bold"
-                        android:textColor="?android:attr/textColorPrimary"
+                        android:textColor="@color/textPrimary"
                         android:layout_marginBottom="12dp" />
 
                     <LinearLayout
                         android:id="@+id/tipsLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical">
-
-                        <!-- Tips will be added dynamically -->
-
-                    </LinearLayout>
+                        android:orientation="vertical" />
 
                 </LinearLayout>
 

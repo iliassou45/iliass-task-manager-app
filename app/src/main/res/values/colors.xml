@@ -3,69 +3,98 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <!-- Theme-aware colors (Light Mode values) -->
-    <color name="colorPrimary">#2196F3</color>
-    <color name="colorPrimaryVariant">#1976D2</color>
-    <color name="colorSecondary">#4CAF50</color>
-    <color name="colorBackground">#F5F5F5</color>
+    <!-- Modern Premium Color Palette (Light Mode) -->
+    <color name="colorPrimary">#6C5CE7</color>
+    <color name="colorPrimaryVariant">#5A4BD1</color>
+    <color name="colorSecondary">#00CEC9</color>
+    <color name="colorBackground">#F7F8FC</color>
     <color name="colorSurface">#FFFFFF</color>
     <color name="colorCard">#FFFFFF</color>
-    <color name="textPrimary">#212121</color>
-    <color name="textSecondary">#757575</color>
+    <color name="textPrimary">#1A1A2E</color>
+    <color name="textSecondary">#6B7280</color>
     <color name="textOnPrimary">#FFFFFF</color>
 
+    <!-- Header Gradient Colors -->
+    <color name="gradientStart">#6C5CE7</color>
+    <color name="gradientEnd">#A29BFE</color>
+    <color name="gradientMid">#8B7CF6</color>
+
     <!-- Statistics Card Colors (Light Mode) -->
-    <color name="statActiveStudentsBg">#E3F2FD</color>
-    <color name="statActiveStudentsText">#1976D2</color>
-    <color name="statLostStudentsBg">#F3E5F5</color>
-    <color name="statLostStudentsText">#8E24AA</color>
-    <color name="statThisMonthBg">#E8F5E9</color>
-    <color name="statThisMonthText">#43A047</color>
-    <color name="statThisYearBg">#FFF3E0</color>
-    <color name="statThisYearText">#F57C00</color>
-    <color name="statDebtBg">#FFEBEE</color>
-    <color name="statDebtText">#E53935</color>
+    <color name="statActiveStudentsBg">#EEF0FF</color>
+    <color name="statActiveStudentsText">#5A4BD1</color>
+    <color name="statLostStudentsBg">#F5EEFF</color>
+    <color name="statLostStudentsText">#7C3AED</color>
+    <color name="statThisMonthBg">#ECFDF5</color>
+    <color name="statThisMonthText">#059669</color>
+    <color name="statThisYearBg">#FFF7ED</color>
+    <color name="statThisYearText">#EA580C</color>
+    <color name="statDebtBg">#FEF2F2</color>
+    <color name="statDebtText">#DC2626</color>
 
     <!-- Search Bar -->
-    <color name="searchBarBg">#FFFFFF</color>
-    <color name="searchHint">#9E9E9E</color>
+    <color name="searchBarBg">#F1F3F9</color>
+    <color name="searchHint">#9CA3AF</color>
 
     <!-- Toolbar -->
-    <color name="toolbarBg">#1976D2</color>
+    <color name="toolbarBg">#6C5CE7</color>
     <color name="toolbarText">#FFFFFF</color>
 
     <!-- Divider -->
-    <color name="divider">#E0E0E0</color>
+    <color name="divider">#E5E7EB</color>
 
     <!-- Link/Accent Colors -->
-    <color name="linkColor">#1976D2</color>
+    <color name="linkColor">#6C5CE7</color>
 
     <!-- Status Colors -->
-    <color name="statusActiveBg">#E8F5E9</color>
-    <color name="statusActiveText">#43A047</color>
-    <color name="statusInactiveBg">#FFEBEE</color>
-    <color name="statusInactiveText">#E53935</color>
+    <color name="statusActiveBg">#ECFDF5</color>
+    <color name="statusActiveText">#059669</color>
+    <color name="statusInactiveBg">#FEF2F2</color>
+    <color name="statusInactiveText">#DC2626</color>
+
+    <!-- Modern Accent Palette -->
+    <color name="accentPurple">#6C5CE7</color>
+    <color name="accentPurpleLight">#A29BFE</color>
+    <color name="accentTeal">#00CEC9</color>
+    <color name="accentTealLight">#81ECEC</color>
+    <color name="accentPink">#FD79A8</color>
+    <color name="accentOrange">#F97316</color>
+    <color name="accentBlue">#0EA5E9</color>
+    <color name="accentGreen">#10B981</color>
+    <color name="accentYellow">#FBBF24</color>
+    <color name="accentRed">#EF4444</color>
+
+    <!-- Card Tint Colors -->
+    <color name="cardTintPurple">#F5F3FF</color>
+    <color name="cardTintTeal">#F0FDFA</color>
+    <color name="cardTintPink">#FDF2F8</color>
+    <color name="cardTintOrange">#FFF7ED</color>
+    <color name="cardTintBlue">#F0F9FF</color>
+
+    <!-- Tip Card -->
+    <color name="tipCardBg">#FDF4FF</color>
+    <color name="tipCardText">#7C3AED</color>
+    <color name="tipCardTextSecondary">#9333EA</color>
 
     <!-- Legacy - keep for backward compatibility -->
-    <color name="primary_light">#2196F3</color>
-    <color name="primary_variant_light">#1976D2</color>
-    <color name="secondary_light">#4CAF50</color>
-    <color name="background_light">#F5F5F5</color>
+    <color name="primary_light">#6C5CE7</color>
+    <color name="primary_variant_light">#5A4BD1</color>
+    <color name="secondary_light">#00CEC9</color>
+    <color name="background_light">#F7F8FC</color>
     <color name="surface_light">#FFFFFF</color>
-    <color name="text_primary_light">#212121</color>
-    <color name="text_secondary_light">#757575</color>
-    <color name="folder_icon_color">#1F51BA</color>
-    <color name="primary_dark">#64B5F6</color>
-    <color name="primary_variant_dark">#42A5F5</color>
-    <color name="secondary_dark">#81C784</color>
-    <color name="background_dark">#121212</color>
-    <color name="surface_dark">#1E1E1E</color>
-    <color name="card_dark">#2C2C2C</color>
-    <color name="text_primary_dark">#E0E0E0</color>
-    <color name="text_secondary_dark">#AAAAAA</color>
+    <color name="text_primary_light">#1A1A2E</color>
+    <color name="text_secondary_light">#6B7280</color>
+    <color name="folder_icon_color">#6C5CE7</color>
+    <color name="primary_dark">#A29BFE</color>
+    <color name="primary_variant_dark">#6C5CE7</color>
+    <color name="secondary_dark">#55EFC4</color>
+    <color name="background_dark">#0D1117</color>
+    <color name="surface_dark">#161B22</color>
+    <color name="card_dark">#21262D</color>
+    <color name="text_primary_dark">#E6EDF3</color>
+    <color name="text_secondary_dark">#8B949E</color>
 
     <!-- Common Colors -->
-    <color name="error">#F44336</color>
-    <color name="success">#4CAF50</color>
-    <color name="warning">#FF9800</color>
+    <color name="error">#EF4444</color>
+    <color name="success">#10B981</color>
+    <color name="warning">#F59E0B</color>
 </resources>

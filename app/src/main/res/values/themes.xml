@@ -1,32 +1,38 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
+    <!-- Base application theme - Modern Premium -->
     <style name="Base.Theme.Iliass" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Primary brand color. -->
-        <item name="colorPrimary">#2196F3</item>
-        <item name="colorPrimaryVariant">#1976D2</item>
+        <!-- Primary brand color -->
+        <item name="colorPrimary">#6C5CE7</item>
+        <item name="colorPrimaryVariant">#5A4BD1</item>
         <item name="colorOnPrimary">#FFFFFF</item>
 
-        <!-- Secondary brand color. -->
-        <item name="colorSecondary">#4CAF50</item>
-        <item name="colorSecondaryVariant">#388E3C</item>
+        <!-- Secondary brand color -->
+        <item name="colorSecondary">#00CEC9</item>
+        <item name="colorSecondaryVariant">#00B4D8</item>
         <item name="colorOnSecondary">#FFFFFF</item>
 
         <!-- Background colors -->
-        <item name="android:colorBackground">#FFFFFF</item>
+        <item name="android:colorBackground">#F7F8FC</item>
         <item name="colorSurface">#FFFFFF</item>
-        <item name="colorOnBackground">#212121</item>
-        <item name="colorOnSurface">#212121</item>
+        <item name="colorOnBackground">#1A1A2E</item>
+        <item name="colorOnSurface">#1A1A2E</item>
+
+        <!-- Status bar -->
+        <item name="android:statusBarColor">#5A4BD1</item>
+        <item name="android:navigationBarColor">#F7F8FC</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="27">true</item>
     </style>
 
     <style name="Theme.Iliass" parent="Base.Theme.Iliass" />
 
     <!-- Theme with ActionBar for flashcard activities -->
     <style name="Theme.Iliass.WithActionBar" parent="Theme.Material3.DayNight">
-        <item name="colorPrimary">#2196F3</item>
-        <item name="colorPrimaryVariant">#1976D2</item>
+        <item name="colorPrimary">#6C5CE7</item>
+        <item name="colorPrimaryVariant">#5A4BD1</item>
         <item name="colorOnPrimary">#FFFFFF</item>
-        <item name="colorSecondary">#4CAF50</item>
-        <item name="android:colorBackground">#F5F5F5</item>
+        <item name="colorSecondary">#00CEC9</item>
+        <item name="android:colorBackground">#F7F8FC</item>
         <item name="colorSurface">#FFFFFF</item>
     </style>
 
