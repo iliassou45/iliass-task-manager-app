@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.iliass.iliass.model.Currency
 import com.iliass.iliass.model.Debt
 import com.iliass.iliass.model.DebtTransaction
 import com.iliass.iliass.model.DebtType
@@ -37,7 +38,32 @@ class DebtDatabase private constructor(context: Context) {
             val type = object : TypeToken<List<Debt>>() {}.type
             val loadedDebts: List<Debt> = gson.fromJson(json, type)
             debts.clear()
-            debts.addAll(loadedDebts)
+            debts.addAll(loadedDebts.map { sanitizeDebt(it) })
+        }
+    }
+
+    /**
+     * Gson bypasses Kotlin default parameter values during deserialization.
+     * Old debt records saved before the currency field was added will have null
+     * currency at the JVM level, causing NPE when copy() is called.
+     * This method fixes those null fields.
+     */
+    @Suppress("SENSELESS_COMPARISON")
+    private fun sanitizeDebt(debt: Debt): Debt {
+        return if (debt.currency == null) {
+            Debt(
+                id = debt.id,
+                personName = debt.personName,
+                type = debt.type,
+                initialAmount = debt.initialAmount,
+                reason = debt.reason,
+                currency = Currency.KMF,
+                dateCreated = debt.dateCreated,
+                transactions = debt.transactions,
+                isPaid = debt.isPaid
+            )
+        } else {
+            debt
         }
     }
 

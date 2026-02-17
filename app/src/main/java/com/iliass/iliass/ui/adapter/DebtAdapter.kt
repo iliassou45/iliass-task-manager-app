@@ -52,8 +52,12 @@ class DebtAdapter(
             val totalAmount = debt.initialAmount +
                     debt.transactions.filter { it.type == TransactionType.ADDITIONAL_LOAN }
                         .sumOf { it.amount }
-            val percentPaid = (totalPaid / totalAmount) * 100
-            holder.statusText.text = "${String.format("%.0f", percentPaid)}% paid"
+            if (totalAmount > 0) {
+                val percentPaid = (totalPaid / totalAmount) * 100
+                holder.statusText.text = "${String.format("%.0f", percentPaid)}% paid"
+            } else {
+                holder.statusText.text = "Paid"
+            }
             holder.statusText.visibility = View.VISIBLE
         } else {
             holder.statusText.visibility = View.GONE
